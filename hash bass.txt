@@ -1,0 +1,308 @@
+ // when 3 is not present
+    // points to next greater after 3
+    it = mp.lower_bound(3);{key hai yeh,value ni }
+    cout << "The lower bound of key 3 is ";
+    cout << (*it).first << " " << (*it).second;
+
+
+
+//yaha se working sekho warna asli mei toh stl use hota bs
+#include <iostream>
+#include<cstring>
+using namespace std;
+//seperate chaining meth of open hashing
+template<typename T> //making generic
+class node{
+    public:
+    string key;//to be calculated by hash fun
+    T val;//value to be entered in table
+  node<T>*next;//points to starting of ll
+  node(string key,T val){
+      this->key=key;//variable name same therof this->
+      this->val=val;
+      next=NULL;//for ll
+  }
+       ~node(){
+    if(next!=NULL){
+        delete next;
+    }  
+}
+};
+template<typename T>
+class Hashtable{
+int curr_size;
+int table_size;//size of table
+node<T>**table;//pointing to arr of pointers
+ int hashfn(string key){ //whole work in string
+     int idx=0;
+     int p=1;
+     for(int j=0;j<key.length();j++){
+         idx=idx+(p*key[j])%table_size;
+          idx=idx%table_size;
+    p=(p*27)%table_size;//27 ka rule hai to avoid anagram collison
+     }
+     return idx;
+ }
+  void rehash(){
+      node<T>** old_table=table;
+      int oldtable_size=table_size;
+      table_size=2*table_size;
+    table=new node<T>*[table_size];
+      for(int i=0;i<table_size;i++){
+          table[i]=NULL;
+      }
+      curr_size=0;
+      //shift elemensts
+      for(int j=0;j<table_size;j++){
+          node<T>*temp=old_table[j];
+          while(temp!=NULL){
+              insert(temp->key,temp->val);
+              temp=temp->next;
+          }
+          if(old_table[j]!=NULL){
+              delete old_table[j];
+          }
+
+      }
+               delete [] old_table;
+  }
+public:
+Hashtable(int ts=5){
+    table_size=ts;
+    table=new node<T>*[table_size];//same as  student **s=new student*[10];
+     curr_size=0;
+     for(int i=0;i<table_size;i++){
+         table[i]=NULL;
+     }
+     }
+  //for insrn in hashtable   
+void insert(string key,T value){
+    int idx=hashfn(key);//got index
+    node<T>*n=new node<T>(key,value);
+    //forming ll,plz dry run
+    n->next=table[idx];
+    table[idx]=n;
+    curr_size++;//inc after every input
+ float load_fac=(curr_size)/(1* table_size);
+ if(load_fac>0.7){
+     //rehash();
+ }
+}
+//for searching and returing adress of that node
+T* search(string key){
+    int id=hashfn(key);
+    node<T>*temp=table[id];
+    while(temp!=NULL){
+        if(temp->key==key){
+            return &temp->val;}
+        temp=temp->next;
+    }
+    return NULL;
+}
+//for earing a node
+void erase(string key){
+    int id=hashfn(key);
+    node<T>*temp=table[id];
+    while(temp!=NULL){
+        if(temp->key==key){
+            node<T>*temp1=temp;
+            temp=temp->next;
+            temp1->next=NULL;
+            delete temp1;
+        }
+    }
+
+}
+//for printing whole hastable
+void print(){
+    for(int i=0;i<table_size;i++){
+        cout<<"bucket "<< i<<"->";
+        node <T>*temp=table[i];
+        while(temp!=NULL){
+            cout<<temp->key<<"->";
+            temp=temp->next;
+        }
+        cout<<endl;
+    }
+}
+
+};
+
+int main() {
+    Hashtable<int> ab;
+    ab.insert("burger",10);
+    ab.insert("pizza",100);
+    ab.insert("coke",120);
+    ab.insert("pasta",150);
+   ab.insert("coffke",40);
+  // int *p=ab.search("pasta");
+  // if(p!=NULL){cout<<"found"<<*p;}else{cout<<"not found";}
+//cout<<endl;
+   ab.print();
+   //cout<<endl;
+  ab.erase("pizza");
+   ab.print();
+        
+}
+
+Q1)
+    //Function to find the smallest window in the string s consisting
+    //of all the characters of string p.
+    string smallestWindow (string s, string p)
+    {
+        //if length of string p is greater than string s then we return -1.
+        if(p.length()>s.length())
+        {
+            return "-1";
+        }
+        else
+        {
+            //using hash tables to store the count of characters in strings.
+            int shash[26]={0};
+            int phash[26]={0};
+            
+            //storing the count of characters in string p in hash table.
+            for(int i=0;i<p.length();i++)
+            {
+                phash[p[i]-'a']++;
+            }
+            
+            int counter=0;
+            int begin=0;
+            int startindex=-1;
+            int length=0;
+            int minlength=INT_MAX;
+            for(int i=0;i<s.length();i++)
+            {
+                //storing the count of characters in string s in hash table.
+                shash[s[i]-'a']++;
+                
+                //if count of current character in string s is equal to or less 
+                //than in string p, we increment the counter.
+                if(phash[s[i]]-'a'!=0&&shash[s[i]-'a']<=phash[s[i]-'a'])
+                {
+                    counter++;
+                }
+                
+                //if all the characters are matched
+                if(counter==p.length())
+                {
+                    //we try to minimize the window.
+                    while(shash[s[begin]-'a']>phash[s[begin]-'a']||phash[s[begin]-'a']==0)
+                    {
+                        if(shash[s[begin]-'a']>phash[s[begin]-'a'])
+                        shash[s[begin]-'a']--;
+                        begin++;
+                    }
+                    //updating window size.
+                    length=i-begin+1;
+                    if(length<minlength)
+                    {
+                        //if new minimum sub-string is found, we store value
+                        //of its starting index for new found window.
+                        startindex=begin;
+                        minlength=length;
+                    }
+                    
+                }
+            }
+            
+            //returning the smallest window or -1 if no such window is present.
+            if(startindex==-1)
+                return "-1";
+            else
+                return s.substr(startindex,minlength);
+        }
+    }
+};
+
+
+
+Q2)distinct elements in each window
+
+void countDistinct(int arr[], int k, int n)
+{
+	// Creates an empty hashmap hm
+	unordered_map<int, int> hm;
+
+	// initialize distinct element count for current window
+	int dist_count = 0;
+
+	// Traverse the first window and store count
+	// of every element in hash map
+	for (int i = 0; i < k; i++) {
+		if (hm[arr[i]] == 0) {
+			dist_count++;
+		}
+		hm[arr[i]] += 1;
+	}
+
+	// Print count of first window
+	cout << dist_count << endl;
+
+	// Traverse through the remaining array
+	for (int i = k; i < n; i++) {
+		// Remove first element of previous window
+		// If there was only one occurrence, then reduce distinct count.
+		if (hm[arr[i - k]] == 1) {
+			dist_count--;
+		}
+		// reduce count of the removed element
+		hm[arr[i - k]] -= 1;
+
+		// Add new element of current window
+		// If this element appears first time,
+		// increment distinct element count
+
+		if (hm[arr[i]] == 0) {
+			dist_count++;
+		}
+		hm[arr[i]] += 1;
+
+		// Print count of current window
+		cout << dist_count << endl;
+	}
+}
+
+subarray with same 0 and 1
+
+LeetCode Odd Even Jump
+
+//agr bola jaye longest subarray wiht same... toh 
+map of sum and idx lena and thora sa add hoga.
+//warna map sirf sum and sum ka freq ka bnega
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int countSubarrWithEqualZeroAndOne(int arr[], int n){
+map<int,int> mp;
+mp[0]=1;
+//mp[0]=-1;
+int sum=0;
+int ans=0;
+for (int i = 0; i < n; i++) {
+	if(arr[i]==0){
+ sum+=-1;}
+else{
+sum+=+1;}
+if(mp[sum]){
+/*
+yeh sb add hota gr longest bola toh
+int idx=mp[sum];
+int len=i-idx;
+if(len>ans)
+ans=len;}else{
+mp[sum]=i
+}
+*/
+ans+=mp[sum];
+mp[sum]++;
+}else{
+mp[sum]=1;
+}
+}
+return ans;}		
+
+
+

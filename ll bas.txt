@@ -1,0 +1,1106 @@
+
+//LL has most no of edge cases think,all of it!	
+
+//Quick Sort requires a lot of this kind of access. In linked list to access i’th index, 
+we have to travel each and every node from the head to i’th node as we don’t have continuous block of memory.
+
+ Therefore, the overhead increases for quick sort.
+Merge sort accesses data sequentially and the need of random access is low
+
+//  temp=temp->next->next;//this is moving temp by 2steps not linking.
+//temp->next=temp->next->next;this is linking of temp,not moving temp
+
+#include <iostream>
+using namespace std;
+   class node{
+       
+       public:
+       
+       int data;
+       node* next;
+       node(int d){
+           data=d;
+           next=NULL;
+       }
+   };    
+              node* head=NULL;node*temp=NULL;      
+//for building forward_list
+void buildll(int v){
+   
+node* new_node=new node(v);
+ 
+if(head==NULL){
+   head=new_node; 
+   temp=new_node; 
+   
+}else{
+temp->next=new_node;
+temp=new_node;}
+
+}
+//for reverse the ll
+void reverse()
+    {
+        // Initialize current, previous and
+        // next pointers
+        node* current = head;
+        node *prev = NULL, *next = NULL;
+ 
+        while (current != NULL) {
+            // Store next
+            next = current->next;
+ 
+            // Reverse current node's pointer
+            current->next = prev;
+ 
+            // Move pointers one position ahead.
+            prev = current;
+            current = next;
+        }
+        head = prev;
+    }
+//deleting a node in O(1) is just by copying the next data to the delting node and making link next->next.
+//for searching
+int Search(int key){
+    node* loc=head;
+    while(loc!=NULL){
+        if(loc->data==key){
+        return 1;}
+        loc=loc->next;
+    }
+    return 0;
+}
+//FOR removing nth node from end in single passs
+ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode * start = new ListNode();
+        start -> next = head;
+        ListNode* fast = start;
+        ListNode* slow = start;     
+
+        for(int i = 1; i <= n; ++i)
+            fast = fast->next;
+    
+        while(fast->next != NULL)
+        {
+            fast = fast->next;
+            slow = slow->next;
+        }
+        
+        slow->next = slow->next->next;
+        
+        return start->next;
+    }
+
+//for printing
+void print(){
+    node* trav=head;
+    while(trav!=NULL){
+        cout<<trav->data<<" ";
+        trav=trav->next;
+    }
+}
+//for insertion
+void InsertAtHead(int data){
+    if(head == NULL){
+        head =new node(data);
+        return;
+    }
+    node * new_n = new node(data);
+    new_n->next= head;
+    head = new_n;
+}
+//for finding length
+int length(){
+    node* temp=head;
+    int c =0;
+    while(temp!=NULL){
+     c++;
+     temp = temp->next;
+    }
+    return c;
+}
+//insertion at tail
+void InsertAtTail(int data){
+    if(head == NULL){
+        InsertAtHead(data);
+        return;
+    }
+    node * temp = head;
+    while(temp->next!=NULL){   //socho kyu
+      temp =temp->next;
+    }
+    node * new_node = new node(data);
+    temp->next = new_node;
+    new_node->next=NULL;
+}
+//detection of cycle
+void detection(){
+    node* slow=head;
+    node* fast=head;
+    while(fast!=NULL && fast->next!=NULL){
+        fast=fast->next->next;
+        slow=slow->next;
+  
+    if(fast==slow){
+        cout<<"present";
+        return ;
+    }
+    }
+    cout<<"not present";
+    
+}
+//CHECK GIVEN LL IS PALINDROME OR NOT.
+
+ ListNode *reverseList(ListNode **head)
+    {
+        ListNode *curr=*head,*prev=NULL,*later=NULL;
+        while(curr)
+        {
+            later=curr->next;
+            curr->next=prev;
+            prev=curr;
+            curr=later;
+        }
+        return prev;
+    }
+    bool isPalindrome(ListNode* head) 
+    {
+        if(!head || !head->next)
+        {
+            return true;
+        }
+        ListNode *slow=head,*fast=head->next;
+	//for middle node 
+        while(fast!=NULL && fast->next!=NULL)
+        {
+            
+            slow=slow->next;
+            fast=fast->next->next;
+        }
+        slow->next=reverseList(slow->next);
+	slow=slow->next;
+        while(slow!=NULL)
+        {
+            if(slow->val!=head->val)
+            {
+                return false;
+            }
+            slow=slow->next;
+            head=head->next;
+        }
+        return true;
+    }
+
+//Remove duplicates from an unsorted linked list 
+Node * removeDuplicates( Node *head) 
+    { 
+        //using set to store already seen values in list. 
+        unordered_set<int> seen; 
+      
+        //using two pointers one of which stores first node other null.
+        struct Node *curr = head; 
+        struct Node *prev = NULL; 
+        
+        //traversing over the linked list.
+        while (curr != NULL) 
+        { 
+            //if data at current node is already present in set, we skip the 
+            //current node and store the node next to current in link of prev. 
+            if (seen.find(curr->data) != seen.end()) 
+            { 
+               prev->next = curr->next;
+               //deleting current node which contains duplicates. 
+               delete (curr);             
+            }
+            
+            //else we just insert the data at current node in set and update 
+            //prev to the current node.
+            else
+            { 
+               seen.insert(curr->data);
+               prev = curr; 
+            }
+            //updating current to the next node of prev node.
+            curr = prev->next; 
+        } 
+        return head;
+    }
+
+//removal of floydcycle
+bool floydCycleRemoval()
+{  
+
+    if (head == NULL || head->next == NULL)
+    {
+        return false;
+    }
+    node *slow = head;
+    node *fast = head->next;
+    while (fast != NULL && fast->next != NULL && fast != slow)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    if (fast == NULL || fast->next == NULL)
+    {
+        //No cycle present
+        return false;
+    }
+
+    if (fast->next == head)
+    {
+        fast->next = NULL;
+        return true;
+    }
+
+    slow = head;
+    
+    while (slow->next != fast->next)
+    {
+        slow = slow->next;
+        fast = fast->next;
+    }
+    fast->next = NULL;
+    return true;
+}
+//REVERSE nodes in k-group
+
+  node* reversekgrp(node* head,int k){
+
+    if(head==NULL or k==1)return head;
+     node* dummy=new node(0);
+	dummy->next=head;
+	node* cur=dummy,*nex=dummy,*pre=dummy;
+int count=0;
+
+while(cur->next!=NULL){
+	cur=cur->next;
+	count++;
+}
+
+	while(count>=k){
+//moving to the second grp
+cur=pre->next;
+nex=cur->next;
+	for(int i=1;i<k;i++){
+//curr is always to first node,nex is next of cur,pre is last node of each grp after one reverse.
+cur->next=nex->next;
+nex->next=pre->next;
+pre->next=nex;
+nex=cur->next;
+}
+
+	pre=curr;
+	count-=k;
+}
+
+	return dummy->next;}
+}
+//MULTIPLY BOTH LL
+define mod 1000000007
+long long  multiplyTwoLists (Node* first, Node* second)
+{
+    long long num1 = 0, num2 = 0;
+    while (first || second)
+    {
+        if(first){
+            num1 = ((num1*10)%mod + (first->data)%mod)%mod;
+            first = first->next;
+        }
+        if(second)
+        {
+            num2 = ((num2*10)%mod + second->data%mod)%mod;
+            second = second->next;
+        }
+    }
+ 
+ 
+    return (num1%mod*num2%mod)%mod;
+}
+//Given a singly linked list, remove all the nodes which have a greater value on its following nodes.
+LinkedList = 12->15->10->11->5->6->2->3
+Output: 15 11 6 3
+
+       Node *compute(Node *head)
+{ if(head->next==NULL)
+return head;
+struct Node *temp=compute(head->next);
+if(temp->data > head->data)
+return temp;
+else
+head->next=temp;
+return head;
+
+    }
+Q)sort the ll in O(N) order of 0 1,2.different from array sorting 
+
+
+ Node* segregate(struct Node *head) {
+    if (!head || !(head->next))
+        return head;
+  
+    //creating three dummy nodes to point to beginning of three linked lists. 
+    Node* zeroD = new Node(0); 
+    Node* oneD = new Node(0); 
+    Node* twoD = new Node(0); 
+  
+    //initializing current pointers for three lists. 
+    Node* zero = zeroD, *one = oneD, *two = twoD; 
+  
+    //traversing over the list with a pointer. 
+    Node* curr = head; 
+    while (curr) { 
+        
+        //we check data at current node and store the node in it's respective
+        //list and update the link part of that list.
+        if (curr->data == 0) { 
+            zero->next = curr; 
+            zero = zero->next; 
+            curr = curr->next; 
+        }
+        else if (curr->data == 1) { 
+            one->next = curr; 
+            one = one->next; 
+            curr = curr->next; 
+        } 
+        else { 
+            two->next = curr; 
+            two = two->next; 
+            curr = curr->next; 
+        } 
+    } 
+  
+    //attaching the three lists containing 0s,1s and 2s respectively.
+    zero->next = (oneD->next) ? (oneD->next) : (twoD->next); 
+    one->next = twoD->next; 
+    two->next = NULL; 
+  
+    //updating the head of the list.
+    head = zeroD->next; 
+  
+    //deleting dummy nodes.
+    delete zeroD; 
+    delete oneD; 
+    delete twoD; 
+  
+    return head;
+}
+
+
+
+//ADD TWO LINKED LIST
+//FIRST REVERSE BOTH THE LL
+    ListNode* addTwoNumbers(ListNode* l, ListNode* u) {
+        
+             ListNode* l1=reverse(l);
+             ListNode* l2=reverse(u);
+            ListNode* temphead=new ListNode(-1);
+        ListNode* node=temphead;
+        int carry=0;
+        
+        while(l1!=NULL || l2!=NULL)
+        {
+            int sum=carry;
+            if(l1!=NULL)
+            {
+                sum+=l1->val;
+                l1=l1->next;
+            }
+            if(l2!=NULL)
+            {
+                sum+=l2->val;
+                l2=l2->next;
+            }
+            node->next=new ListNode(sum%10);
+            node=node->next;
+            carry=sum/10;
+            
+            
+            
+        }
+        if(carry!=0)
+            node->next=new ListNode(carry);
+        
+        return temphead->next;
+}
+//GETTING INTERSECTION POINT OF TWO LL
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+    
+    if(headA==NULL || headB==NULL){
+        return NULL;
+    }
+    ListNode* l1=new ListNode();
+    l1=headA;
+    ListNode* l2=new ListNode();
+    l2=headB;
+    
+    while(l1!=l2){
+        
+        l1=l1==NULL?headB:l1->next;
+        l2=l2==NULL?headA:l2->next;
+    }
+    
+    return l1;
+}
+
+//FLATENNING A LL
+ 
+  Node*merge(Node*a,Node*b){
+Node*dummynode =new Node(0);
+Node*ptr = dummynode;
+Node*tempa =a;
+Node*tempb = b;
+
+while(tempa&&tempb){
+if(tempa->data<=tempb->data){
+ptr->bottom = tempa;
+ptr =tempa;
+tempa =tempa->bottom;
+}
+else{
+ptr->bottom=tempb;
+ptr=tempb;
+tempb =tempb->bottom;
+}
+}
+while(tempa!=NULL){
+ptr->bottom =tempa;
+ptr=tempa;
+tempa=tempa->bottom;
+}
+while(tempb!=NULL){
+ptr->bottom =tempb;
+ptr=tempb;
+tempb =tempb->bottom;
+}
+dummynode->bottom->next=NULL;
+return dummynode->bottom;
+}
+
+Node *flatten(Node *root)
+{
+if(root->next==NULL){
+return root;
+}
+struct Node*curr = root;
+struct Node*pre = flatten(root->next);
+struct Node*m = merge(curr,pre);
+
+return m;
+}
+
+              
+// C++ program to clone a linked list with next
+// and arbit pointers in O(n) time
+#include <bits/stdc++.h>
+using namespace std;
+
+// Structure of linked list Node
+struct Node
+{
+	int data;
+	Node *next,*random;
+	Node(int x)
+	{
+		data = x;
+		next = random = NULL;
+	}
+};
+
+Node* clone(Node *start)
+{
+	Node* curr = start, *temp;
+
+	// insert additional node after
+	// every node of original list
+	while (curr)
+	{
+		temp = curr->next;
+
+		// Inserting node
+		curr->next = new Node(curr->data);
+		curr->next->next = temp;
+		curr = temp;
+	}
+
+	curr = start;
+
+	// adjust the random pointers of the
+	// newly added nodes
+	while (curr)
+	{
+		if(curr->next)
+			curr->next->random = curr->random ?
+								curr->random->next : curr->random;
+
+		// move to the next newly added node by
+		// skipping an original node
+		curr = curr->next?curr->next->next:curr->next;
+	}
+
+	Node* original = start, *copy = start->next;
+
+	// save the start of copied linked list
+	temp = copy;
+
+	// now separate the original list and copied list
+	while (original && copy)
+	{
+		original->next =
+		original->next? original->next->next : original->next;
+
+		copy->next = copy->next?copy->next->next:copy->next;
+		original = original->next;
+		copy = copy->next;
+	}
+
+	return temp;
+}
+// C++ program to rotate
+// a linked list counter clock wise
+
+// This function rotates a linked list
+// counter-clockwise and updates the
+// head. The function assumes that k is
+// smaller than size of linked list.
+void rotate(Node** head_ref, int k)
+{
+	if (k == 0)
+		return;
+
+	// Let us understand the below
+	// code for example k = 4 and
+	// list = 10->20->30->40->50->60.
+	Node* current = *head_ref;
+	int LEN=1;
+	// Traverse till the end.
+	while (current->next != NULL)
+		current = current->next;len++;
+	//making the ll as cll to rotate 
+	current->next = *head_ref;
+	//assigning current to head again
+	current = *head_ref;
+	K=K%LEN;
+ 	k=len-k;
+	// traverse the linked list to k-1 position which
+	// will be last element for rotated array.
+	for (int i = 0; i < k - 1; i++)
+		current = current->next;
+
+	// update the head_ref and last element pointer to NULL
+	*head_ref = current->next;
+	current->next = NULL;
+
+		return *head_ref;
+}
+
+
+// C++ program to merge k sorted IN NLOGK AND O1SPACE
+// arrays of size n each
+
+/* Takes two lists sorted in increasing order, and merge
+their nodes together to make one big sorted list. Below
+function takes O(n) extra space for recursive calls,
+	*/
+Node* SortedMerge(Node* a, Node* b)
+{
+	Node* result = NULL;
+
+	/* Base cases */
+	if (a == NULL)
+		return (b);
+	else if (b == NULL)
+		return (a);
+
+	/* Pick either a or b, and recur */
+	if (a->data <= b->data) {
+		result = a;
+		result->next = SortedMerge(a->next, b);
+	}
+	else {
+		result = b;
+		result->next = SortedMerge(a, b->next);
+	}
+
+	return result;
+}
+
+// The main function that takes an array of lists
+// arr[0..last] and generates the sorted output
+Node* mergeKLists(Node* arr[], int last)
+{
+	// repeat until only one list is left
+	while (last != 0) {
+		int i = 0, j = last;
+
+		// (i, j) forms a pair
+		while (i < j) {
+			// merge List i with List j and store
+			// merged list in List i
+			arr[i] = SortedMerge(arr[i], arr[j]);
+
+			// consider next pair
+			i++, j--;
+
+			// If all pairs are merged, update last
+			if (i >= j)
+				last = j;
+		}
+	}
+
+	return arr[0];
+}
+
+
+// C++ implementation to sort a k sorted doubly IN NLOGK TIME AND K-SC
+// linked list
+#include <bits/stdc++.h>
+using namespace std;
+
+// a node of the doubly linked list
+struct Node {
+	int data;
+	struct Node* next;
+	struct Node* prev;
+};
+
+// 'compare' function used to build up the
+// priority queue
+struct compare {
+	bool operator()(struct Node* p1, struct Node* p2)
+	{
+		return p1->data > p2->data;
+	}
+};
+
+// function to sort a k sorted doubly linked list
+struct Node* sortAKSortedDLL(struct Node* head, int k)
+{
+	// if list is empty
+	if (head == NULL)
+		return head;
+
+	// priority_queue 'pq' implemented as min heap with the
+	// help of 'compare' function
+	priority_queue<Node*, vector<Node*>, compare> pq;
+
+	struct Node* newHead = NULL, *last;
+
+	// Create a Min Heap of first (k+1) elements from
+	// input doubly linked list
+	for (int i = 0; head != NULL && i <= k; i++) {
+		// push the node on to 'pq'
+		pq.push(head);
+
+		// move to the next node
+		head = head->next;
+	}
+
+	// loop till there are elements in 'pq'
+	while (!pq.empty()) {
+
+		// place root or top of 'pq' at the end of the
+		// result sorted list so far having the first node
+		// pointed to by 'newHead'
+		// and adjust the required links
+		if (newHead == NULL) {
+			newHead = pq.top();
+			newHead->prev = NULL;
+
+			// 'last' points to the last node
+			// of the result sorted list so far
+			last = newHead;
+		}
+
+		else {
+			last->next = pq.top();
+			pq.top()->prev = last;
+			last = pq.top();
+		}
+
+		// remove element from 'pq'
+		pq.pop();
+
+		// if there are more nodes left in the input list
+		if (head != NULL) {
+			// push the node on to 'pq'
+			pq.push(head);
+
+			// move to the next node
+			head = head->next;
+		}
+	}
+
+	// making 'next' of last node point to NULL
+	last->next = NULL;
+
+	// new head of the required sorted DLL
+	return newHead;
+}
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define rep(i, a, b) for (int i = a; i <= b; i++)
+
+using namespace std;
+// Made a class node containing data and previous pointer as
+// we are using tail pointer
+class Node {
+public:
+	int data;
+	Node* prev;
+	Node(int n)
+	{
+		data = n;
+		prev = NULL;
+	}
+};
+
+void Multiply(Node* tail, int n)
+{
+	Node *temp = tail,
+		*prevNode = tail; // Temp variable for keeping tail
+	int carry = 0;
+	while (temp != NULL) {
+		int data = temp->data * n + carry;
+		temp->data = data % 10; // stores the last digit
+		carry = data / 10;
+		prevNode = temp;
+		temp = temp->prev; // Moving temp by 1 prevNode will
+						// now denote temp
+	}
+	// If carry is greater than 0 then we create another
+	// node for it.
+	while (carry != 0) {
+		prevNode->prev = new Node((int)(carry % 10));
+		carry /= 10;
+		prevNode = prevNode->prev;
+	}
+}
+
+void print(Node* tail)
+{
+	if (tail == NULL) // Using tail recursion
+		return;
+	print(tail->prev);
+	cout
+		<< tail->data; // Print linked list in reverse order
+}
+
+
+
+#include<bits/stdc++.h>
+using namespace std;
+class node { //define node to store data and next address
+   public:
+   int data;
+   node *next;
+};
+void display(class node* start) {
+   node* p = start; // current node set to head
+   while(p != NULL) { //traverse until current node isn't NULL
+      cout << p -> data << " ";
+      p = p -> next; // go to next node
+   }
+}
+node* getNode(int d) {
+   node* temp = new node;
+   temp -> data = d;
+   temp -> next = NULL;
+   return temp;
+}
+node* mergeList(node* ll1, node* ll2) { //function for merging two sorted list
+   node* newhead = NULL;
+   if(ll1 == NULL)
+      return ll2;
+   if(ll2 == NULL)
+      return ll1;
+   //recursively merge the lists
+   if(ll1 -> data <= ll2 -> data) {
+      newhead = ll1;
+      newhead -> next = mergeList(ll1->next,ll2);
+   } else {
+      newhead = ll2;
+      newhead -> next = mergeList(ll1,ll2->next);
+   }
+   return newhead;
+}
+void splitList(node* start, node** ll1,node** ll2) {
+   //similar to flyod's tortoise algorithm
+   node* slow = start;
+   node* fast = start -> next;
+   while(fast!= NULL) {
+      fast = fast -> next;
+      if(fast!= NULL) {
+         slow = slow -> next;
+         fast = fast -> next;
+      }
+   }
+   *ll1 = start;
+   *ll2 = slow -> next;
+   //spliting
+   slow -> next = NULL;
+}
+void mergeSort(node** start) {
+   node* head = *start;
+   node* ll1,*ll2;
+   //base case
+   if(head == NULL || head->next == NULL) {
+      return;
+   }
+   splitList(head,&ll1,&ll2); //split the list in two halves
+   //sort left and right sublists
+   mergeSort(&ll1);
+   mergeSort(&ll2);
+   //merge two sorted list
+   *start = mergeList(ll1,ll2);
+   return;
+}
+int main() {
+   cout << "Creating the linked list: " << endl;
+   cout << "Enter 0 to stop building the list, else enter any integer" << endl;
+   int k,count = 1,x;
+   node* curr,*temp;
+   cin >> k;
+   node* head = getNode(k);   //buliding list, first node
+   cin >> k;
+   temp = head;
+   while(k) {
+      curr = getNode(k);
+      temp -> next = curr;//appending each node
+      temp = temp -> next;
+      cin >> k;
+   }
+   cout<<"Before sorting: " << endl;
+   display(head); // displaying the list
+   cout<<"\nAfter sorting: " << endl;
+   mergeSort(&head);
+   display(head);
+   return 0;
+}
+
+
+//LFU CACHE 
+struct Node {
+    int key, value, cnt;
+    Node *next; 
+    Node *prev;
+    Node(int _key, int _value) {
+        key = _key;
+        value = _value; 
+        cnt = 1; 
+    }
+}; 
+struct List {
+    int size; 
+    Node *head; 
+    Node *tail; 
+    List() {
+        head = new Node(0, 0); 
+        tail = new Node(0,0); 
+        head->next = tail;
+        tail->prev = head; 
+        size = 0;
+    }
+    
+    void addFront(Node *node) {
+        Node* temp = head->next;
+        node->next = temp;
+        node->prev = head;
+        head->next = node;
+        temp->prev = node;
+        size++; 
+    }
+    
+    void removeNode(Node* delnode) {
+        Node* delprev = delnode->prev;
+        Node* delnext = delnode->next;
+        delprev->next = delnext;
+        delnext->prev = delprev;
+        size--; 
+    }
+    };
+class LFUCache {
+    map<int, Node*> keyNode; 
+    map<int, List*> freqListMap; 
+    int maxSizeCache;
+    int minFreq; 
+    int curSize; 
+public:
+    LFUCache(int capacity) {
+        maxSizeCache = capacity; 
+        minFreq = 0;
+        curSize = 0; 
+    }
+    void updateFreqListMap(Node *node) {
+        keyNode.erase(node->key); 
+        freqListMap[node->cnt]->removeNode(node); 
+        if(node->cnt == minFreq && freqListMap[node->cnt]->size == 0) {
+            minFreq++; 
+        }
+        
+        List* nextHigherFreqList = new List();
+        if(freqListMap.find(node->cnt + 1) != freqListMap.end()) {
+            nextHigherFreqList = freqListMap[node->cnt + 1];
+        } 
+        node->cnt += 1; 
+        nextHigherFreqList->addFront(node); 
+        freqListMap[node->cnt] = nextHigherFreqList; 
+        keyNode[node->key] = node;
+    }
+    
+    int get(int key) {
+        if(keyNode.find(key) != keyNode.end()) {
+            Node* node = keyNode[key]; 
+            int val = node->value; 
+            updateFreqListMap(node); 
+            return val; 
+        }
+        return -1; 
+    }
+    
+    void put(int key, int value) {
+        if (maxSizeCache == 0) {
+            return;
+        }
+        if(keyNode.find(key) != keyNode.end()) {
+            Node* node = keyNode[key]; 
+            node->value = value; 
+            updateFreqListMap(node); 
+        }
+        else {
+            if(curSize == maxSizeCache) {
+                List* list = freqListMap[minFreq]; 
+                keyNode.erase(list->tail->prev->key); 
+                freqListMap[minFreq]->removeNode(list->tail->prev);
+                curSize--; 
+            }
+            curSize++; 
+            // new value has to be added who is not there previously 
+            minFreq = 1; 
+            List* listFreq = new List(); 
+            if(freqListMap.find(minFreq) != freqListMap.end()) {
+                listFreq = freqListMap[minFreq]; 
+            }
+            Node* node = new Node(key, value); 
+            listFreq->addFront(node);
+            keyNode[key] = node; 
+            freqListMap[minFreq] = listFreq; 
+        }
+    }
+
+
+
+//LRU CACHE and LFU are eviction algorithms.
+class LRUCache {
+public:
+    class node {
+        public:
+            int key;
+            int val;
+            node* next;
+            node* prev;
+        node(int _key, int _val) {
+            key = _key;
+            val = _val; 
+        }
+    };
+    
+    node* head = new node(-1,-1);
+    node* tail = new node(-1,-1);
+    
+    int cap;
+    unordered_map<int, node*>m;
+    
+    LRUCache(int capacity) {
+        cap = capacity;    
+        head->next = tail;
+        tail->prev = head;
+    }
+    
+    void addnode(node* newnode) {
+        node* temp = head->next;
+        newnode->next = temp;
+        newnode->prev = head;
+        head->next = newnode;
+        temp->prev = newnode;
+    }
+    
+    void deletenode(node* delnode) {
+        node* delprev = delnode->prev;
+        node* delnext = delnode->next;
+        delprev->next = delnext;
+        delnext->prev = delprev;
+    }
+    
+    int get(int key_) {
+        if (m.find(key_) != m.end()) {
+            node* resnode = m[key_];
+            int res = resnode->val;
+            m.erase(key_);
+            deletenode(resnode);
+            addnode(resnode);
+            m[key_] = head->next;
+            return res; 
+        }
+    
+        return -1;
+    }
+    
+    void put(int key_, int value) {
+        if(m.find(key_) != m.end()) {
+            node* existingnode = m[key_];
+            m.erase(key_);
+            deletenode(existingnode);
+        }
+        if(m.size() == cap) {
+          m.erase(tail->prev->key);
+          deletenode(tail->prev);
+        }
+        
+        addnode(new node(key_, value));
+        m[key_] = head->next; 
+    }
+};
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */	
+
+
+int main() {
+ 
+ 
+ //cout<<endl;
+ buildll(1);
+ buildll(18);
+ buildll(10);
+ buildll(6);
+ buildll(99);
+ buildll(6);
+print();cout<<endl;
+ //cout<<Search(890);
+reverse();
+ cout<<endl;
+ print();
+ //cout<<endl;
+ //InsertAtHead(88);
+ //print();
+ //InsertAtTail(66);
+ //cout<<endl;
+ //print();
+ cout<<endl;
+ //bool a=floydCycleRemoval();
+ //cout<<a;
+ cout<<endl;
+ //cout<<length();
+ detection();
+ 
+ 
+   return 0;
+}
+

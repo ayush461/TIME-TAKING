@@ -1,0 +1,446 @@
+Q)N meeting in a room
+
+struct meeting {
+    int start;
+    int end;
+    int pos; 
+}; 
+bool comparator(struct meeting m1, meeting m2) 
+{ 
+    if (m1.end < m2.end) return true; 
+    else if(m1.end > m2.end) return false; 
+    else if(m1.pos < m2.pos) return true; 
+    return false; 
+} 
+void maxMeetings(int s[], int e[], int n) {
+    struct meeting meet[n]; 
+    for(int i = 0;i<n;i++) {
+        meet[i].start = s[i], meet[i].end = e[i], meet[i].pos = i+1; 
+    }
+    
+    sort(meet, meet+n, comparator); 
+    
+    vector<int> answer;
+    
+    int limit = meet[0].end; 
+    answer.push_back(meet[0].pos); 
+    
+    for(int i = 1;i<n;i++) {
+        if(meet[i].start > limit) {
+            limit = meet[i].end; 
+            answer.push_back(meet[i].pos); 
+        }
+    }
+    for(int i = 0;i<answer.size();i++) {
+        cout << answer[i] << " "; 
+    }
+    
+}
+
+Q Job Sequencing Problem
+
+ static  bool myCmp(Job arr1, Job arr2)
+{
+    return arr1.profit > arr2.profit;
+}
+
+ vector<int> JobScheduling(Job arr[], int n) 
+{
+    sort(arr, arr+n, myCmp);
+    vector<int>ans;
+    bool done[n] = {0};
+    
+    int day = 0, profit = 0;
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = min(n,arr[i].dead-1); j >= 0; j--)
+        {
+            if(done[j] == false)
+            {
+                day += 1;
+                profit += arr[i].profit;
+                
+                done[j] = true;
+                
+                break;
+            }
+        }
+    }
+    
+    ans.push_back(day);
+    ans.push_back(profit);
+    
+    return ans;
+} 
+
+// C++ program to divide a board into m*n squares
+#include <bits/stdc++.h>
+using namespace std;
+
+// method returns minimum cost to break board into
+// m*n squares
+int minimumCostOfBreaking(int X[], int Y[], int m, int n)
+{
+	int res = 0;
+
+	// sort the horizontal cost in reverse order
+	sort(X, X + m, greater<int>());
+
+	// sort the vertical cost in reverse order
+	sort(Y, Y + n, greater<int>());
+
+	// initialize current width as 1
+	int hzntl = 1, vert = 1;
+
+	// loop until one or both cost array are processed
+	int i = 0, j = 0;
+	while (i < m && j < n)
+	{
+		if (X[i] > Y[j])
+		{
+			res += X[i] * vert;
+
+			// increase current horizontal part count by 1
+			hzntl++;
+			i++;
+		}
+		else
+		{
+			res += Y[j] * hzntl;
+
+			// increase current vertical part count by 1
+			vert++;
+			j++;
+		}
+	}
+
+	// loop for horizontal array, if remains
+	int total = 0;
+	while (i < m)
+		total += X[i++];
+	res += total * vert;
+
+	// loop for vertical array, if remains
+	total = 0;
+	while (j < n)
+		total += Y[j++];
+	res += total * hzntl;
+
+	return res;
+}
+
+// CPP to design platform for maximum stoppage
+#include <bits/stdc++.h>
+using namespace std;
+
+// number of platforms and trains
+#define n 2
+#define m 5
+
+// function to calculate maximum trains stoppage
+int maxStop(int arr[][3])
+{
+	// declaring vector of pairs for platform
+	vector<pair<int, int> > vect[n + 1];
+
+	// Entering values in vector of pairs
+	// as per platform number
+	// make departure time first element
+	// of pair
+	for (int i = 0; i < m; i++)
+		vect[arr[i][2]].push_back(
+			make_pair(arr[i][1], arr[i][0]));
+
+	// sort trains for each platform as per
+	// dept. time
+	for (int i = 0; i <= n; i++)
+		sort(vect[i].begin(), vect[i].end());
+	
+	// perform activity selection approach
+	int count = 0;
+	for (int i = 0; i <= n; i++) {
+		if (vect[i].size() == 0)
+			continue;
+
+		// first train for each platform will
+		// also be selected
+		int x = 0;
+		count++;
+		for (int j = 1; j < vect[i].size(); j++) {
+			if (vect[i][j].second >=
+							vect[i][x].first) {
+				x = j;
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+// CPP program to find maximum product of
+// a subset. in O(N)
+#include <bits/stdc++.h>
+using namespace std;
+
+int maxProductSubset(int a[], int n)
+{
+	if (n == 1)
+		return a[0];
+
+	// Find count of negative numbers, count
+	// of zeros, negative number
+	// with least absolute value
+	// and product of non-zero numbers
+	int max_neg = INT_MIN;
+	int count_neg = 0, count_zero = 0;
+	int prod = 1;
+	for (int i = 0; i < n; i++) {
+
+		// If number is 0, we don't
+		// multiply it with product.
+		if (a[i] == 0) {
+			count_zero++;
+			continue;
+		}
+
+		// Count negatives and keep
+		// track of negative number
+		// with least absolute value
+		if (a[i] < 0) {
+			count_neg++;
+			max_neg = max(max_neg, a[i]);
+		}
+
+		prod = prod * a[i];
+	}
+
+	// If there are all zeros
+	if (count_zero == n)
+		return 0;
+
+	// If there are odd number of
+	// negative numbers
+	if (count_neg & 1) {
+
+		// Exceptional case: There is only
+		// negative and all other are zeros
+		if (count_neg == 1 &&
+			count_zero > 0 &&
+			count_zero + count_neg == n)
+			return 0;
+
+		// Otherwise result is product of
+		// all non-zeros divided by
+		//negative number with
+		// least absolute value
+		prod = prod / max_neg;
+	}
+
+	return prod;
+}
+
+Maximize sum after K negations
+
+    long long int maximizeSum(long long int a[], int n, int k)
+    {
+       long long int sum=0;
+        sort(a,a+n);
+        int i;
+        for( i=0;i<k and a[i]<0 and i<n;i++){
+            if(a[i]<0){
+                a[i]=-a[i];
+
+            }
+                    }
+                     sort(a,a+n);
+            int x=i;
+      if((k-x)%2!=0){
+          
+              a[0]=-a[0];
+          }      
+                    
+                    
+        for(int i=0;i<n;i++){
+            sum+=a[i];
+        }
+        return sum;
+            }
+
+
+
+The task is to find the smallest number with given sum of digits as S and number of digits as D.
+
+      string num = "";
+    while(S!=0 and D!=0) {
+        if(S > 9) {
+//rightmost mei max no rakht skte aaram se
+            num = to_string(9)+num;
+            S -= 9;
+            D--;
+        }
+        else if(S > 0) {
+            if(D>1) {
+                num = to_string(S-1)+num;
+                S = 1;
+                D--;
+            }
+            if(D == 1) {
+                num = to_string(S)+num;
+                S = 0; D = 0;
+            }
+        }
+    }
+    if(S>0) return to_string(-1);
+    //reverse(num.begin(), num.end());
+    return num;
+}
+
+
+// CPP implementation of
+// above algorithm
+#include <bits/stdc++.h>
+using namespace std;
+
+int MaxSumDifference(int a[], int n)
+{
+	// final sequence stored in the vector
+	vector<int> finalSequence;
+
+	// sort the original array
+	// so that we can retrieve
+	// the large elements from
+	// the end of array elements
+	sort(a, a + n);
+
+	// In this loop first we will insert
+	// one smallest element not entered
+	// till that time in final sequence
+	// and then enter a highest element
+	// (not entered till that time) in
+	// final sequence so that we
+	// have large difference value. This
+	// process is repeated till all array
+	// has completely entered in sequence.
+	// Here, we have loop till n/2 because
+	// we are inserting two elements at a
+	// time in loop.
+	for (int i = 0; i < n / 2; ++i) {
+		finalSequence.push_back(a[i]);
+		finalSequence.push_back(a[n - i - 1]);
+	}
+
+	// If there are odd elements, push the
+	// middle element at the end.
+	if (n % 2 != 0)
+		finalSequence.push_back(a[n/2]);
+
+	// variable to store the
+	// maximum sum of absolute
+	// difference
+	int MaximumSum = 0;
+
+	// In this loop absolute difference
+	// of elements for the final sequence
+	// is calculated.
+	for (int i = 0; i < n - 1; ++i) {
+		MaximumSum = MaximumSum + abs(finalSequence[i] -
+								finalSequence[i + 1]);
+	}
+
+	// absolute difference of last element
+	// and 1st element
+	MaximumSum = MaximumSum + abs(finalSequence[n - 1] -
+									finalSequence[0]);
+
+	// return the value
+	return MaximumSum;
+}
+
+
+// C/C++ program to solve fractional Knapsack Problem
+#include <bits/stdc++.h>
+
+using namespace std;
+
+// Structure for an item which stores weight and
+// corresponding value of Item
+struct Item {
+	int value, weight;
+
+	// Constructor
+	Item(int value, int weight)
+	{
+	this->value=value;
+	this->weight=weight;
+	}
+};
+
+// Comparison function to sort Item according to val/weight
+// ratio
+bool cmp(struct Item a, struct Item b)
+{
+	double r1 = (double)a.value / (double)a.weight;
+	double r2 = (double)b.value / (double)b.weight;
+	return r1 > r2;
+}
+
+// Main greedy function to solve problem
+double fractionalKnapsack(int W, struct Item arr[], int n)
+{
+	// sorting Item on basis of ratio
+	sort(arr, arr + n, cmp);
+
+		int curWeight = 0; // Current weight in knapsack
+	double finalvalue = 0.0; // Result (value in Knapsack)
+
+	// Looping through all Items
+	for (int i = 0; i < n; i++) {
+		// If adding Item won't overflow, add it completely
+		if (curWeight + arr[i].weight <= W) {
+			curWeight += arr[i].weight;
+			finalvalue += arr[i].value;
+		}
+
+		// If we can't add current Item, add fractional part
+		// of it
+		else {
+			int remain = W - curWeight;
+			finalvalue += arr[i].value
+						* ((double)remain
+							/ (double)arr[i].weight);
+			break;
+		}
+	}
+
+	// Returning final value
+	return finalvalue;
+}
+
+//Buyer and seller from spoj
+int n;
+    cin>>n;
+while(true){
+        int a[n];
+        for(int i=0;i<n;i++) cin>>a[i];
+        vector<pair<int,int> > buy;
+        vector<pair<int,int> > sell;
+        for(int i=0;i<n;i++){
+            if(a[i]>0) buy.push_back({a[i],i});
+            else sell.push_back({a[i],i});
+        }
+        int ans = 0;
+        int i=0,j=0;
+        while(i<buy.size() and j<sell.size()){
+            int x = min(buy[i].first,-sell[j].first);
+            buy[i].first -= x;
+            sell[j].first += x;
+            int diff = abs(buy[i].second - sell[j].second);
+            ans += (x * diff);
+            if(buy[i].first == 0) i++;
+            if(sell[j].first == 0) j++;
+        }
+        cout<<ans<<endl;
+        
+        if(n==0) break;
+    }
+

@@ -1,0 +1,502 @@
+
+      //Therefore, building the entire Heap will take N heapify operations and the total time complexity will be O(N*logN).
+
+   In reality, building a heap takes O(n) time depending on the implementation which can be seen
+#include <iostream>
+#include<vector>
+//priority queue by deflt is max heap
+using namespace std;
+class Heap{
+ vector<int> v;
+ bool  Minheap;
+ bool compare(int a,int b){
+     if(Minheap){
+         return a<b;
+     }else{
+          return a>b;
+     }
+ }
+ // bt back to ht kyuki deletion se ht bt ho jata so adjusmnt is req
+//this is for min-heap,{max mei min ke jagah max hoga}
+ void heapify(vector<int>v,int idx){
+     int left=2*idx;
+     int right=left+1;
+     int min_idx=idx;
+     int last=v.size()-1;
+     if(left<=last and compare(v[left],v[idx])){
+         min_idx=left;
+     }
+     if(right<=last and compare(v[right],v[min_idx])){
+         min_idx=right;
+     }
+     if(min_idfx!=idx){
+         swap(v[min_idx],v[idx]);
+         heapify(min_idx);
+     }
+ }
+ public:
+ //constructor
+Heap(int default_size=10,bool type=true){
+    v.reserve(default_size);
+    v.push_back(-1);//0th index blocked rhta na
+    Minheap=type;
+}
+//heap bna rhe ek ek krke
+void push(int d){
+    v.push_back(d);
+    int idx=v.size()-1;
+    int parent=idx/2;
+    while(idx>1 and compare(v[idx],v[parent])){
+        swap(v[idx],v[parent]);
+        idx=parent;
+        parent= parent/2;
+    }
+}
+//check wherter array is empty or not
+bool empty(){
+    return v.size() ==1;
+}
+//return top of tree and first of array
+int top(){
+    return v[1];
+}
+//heap-sort
+isme first array ko heap bnao by push funct in ON time.
+the del krte jao one-by-one from top,and save it,as del takes place from top.
+apne sorted ho jayega array in asc or desc depends tmne push ke wakt konsa
+heap bnaya tha.
+
+void heapSort(int arr[], int n)
+{
+    // Build heap (rearrange array)
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+ 
+    // One by one extract an element from heap
+    for (int i = n - 1; i > 0; i--) {
+        // Move current root to end
+        swap(arr[0], arr[i]);
+ 
+        // call max heapify on the reduced heap
+        heapify(arr, i, 0);
+    }
+}
+
+
+// for deletion one by one in heap,heap sort hogya indirectly
+void pop(){
+int last=v.size()-1;
+swap(v[last],v[1]);
+v.pop_back();
+heapify(v,1);
+
+}
+
+//build heap from given array in On TIME by starting from down to up
+//start from fist non-leaf node,v.szie-1/2
+/*void buildheap(vector<int> &v){
+for(int i=(v.size()-1)/2;i>=1;i--){
+    heapify(v,i); isme heapify ka parametr change krlena
+}
+}*/
+
+void print(){
+    for(auto x:v){
+        cout<<x<<" ";
+    }
+}
+
+};
+
+    
+}
+void print(vector<int>v){
+    for(auto x:v){
+        cout<<x<<" ";
+    }
+}
+Given an array of N positive integers, print k largest elements from the array. 
+IN O(NLOGK) AND O(K)
+ vector<int> kLargest(int arr[], int n, int k)
+    {
+          // code here
+        vector<int>res;
+	//for making min heap,warna by def toh max bnta hai
+        priority_queue<int,vector<int>,greater<int>> pq (arr,arr+k);
+        
+        for(int i=k;i<n;i++) { if(arr[i]>pq.top())
+            {
+                pq.pop();
+                pq.push(arr[i]);
+            }
+        }
+        while(pq.empty()==false)
+        {
+            res.push_back(pq.top());
+            pq.pop();
+        }
+        sort(res.begin(),res.end(),greater<int>());
+        return res;
+    
+    }
+
+
+// C++ program to merge k sorted arrays
+// of size n each.
+#include <bits/stdc++.h>
+using namespace std;
+
+// A pair of pairs, first element is going to
+// store value, second element index of array
+// and third element index in the array.
+typedef pair<int, pair<int, int> > ppi;
+
+// This function takes an array of arrays as an
+// argument and all arrays are assumed to be
+// sorted. It merges them together and prints
+// the final sorted output.
+vector<int> mergeKArrays(vector<vector<int> > arr)
+{
+	vector<int> output;
+
+	// Create a min heap with k heap nodes. Every
+	// heap node has first element of an array
+	priority_queue<ppi, vector<ppi>, greater<ppi> > pq;
+
+	for (int i = 0; i < arr.size(); i++)
+		pq.push({ arr[i][0], { i, 0 } });
+
+	// Now one by one get the minimum element
+	// from min heap and replace it with next
+	// element of its array
+	while (pq.empty() == false) {
+		ppi curr = pq.top();
+		pq.pop();
+
+		// i ==> Array Number
+		// j ==> Index in the array number
+		int i = curr.second.first;
+		int j = curr.second.second;
+
+		output.push_back(curr.first);
+
+		// The next element belongs to same array as
+		// current.
+		if (j + 1 < arr[i].size())
+			pq.push({ arr[i][j + 1], { i, j + 1 } });
+	}
+
+	return output;
+}
+
+
+// A STL based C++ program to sort a nearly sorted array.
+#include <bits/stdc++.h>
+using namespace std;
+
+// Given an array of size n, where every element
+// is k away from its target position, sorts the
+// array in O(n logk) time.
+int sortK(int arr[], int n, int k)
+{
+	
+	// Insert first k+1 items in a priority queue (or min
+	// heap)
+	//(A O(k) operation). We assume, k < n.
+//if size of array = k i.e k away from its target position
+//then
+	int size;
+	size=(n==k)?k:k+1;
+	priority_queue<int, vector<int>, greater<int> > pq(arr, arr +size);
+
+	// i is index for remaining elements in arr[] and index
+	// is target index of for current minimum element in
+	// Min Heap 'pq'.
+	int index = 0;
+	for (int i = k + 1; i < n; i++) {
+		arr[index++] = pq.top();
+		pq.pop();
+		pq.push(arr[i]);
+	}
+
+	while (pq.empty() == false) {
+		arr[index++] = pq.top();
+		pq.pop();
+	}
+}
+
+// A utility function to print array elements
+void printArray(int arr[], int size)
+{
+	for (int i = 0; i < size; i++)
+		cout << arr[i] << " ";
+	cout << endl;
+}
+
+
+
+
+Huffman codding
+->sort the data in asc order of prob
+->make first two as leaf and add prob and join to a parent and repaeat it till u reach  last data
+->assign 0 to left and 1 to right path of tree
+
+// C++ program for Huffman Coding with STL in O(NLOGN)
+#include <bits/stdc++.h>
+using namespace std;
+
+// A Huffman tree node
+struct MinHeapNode {
+
+	// One of the input characters
+	char data;
+
+	// Frequency of the character
+	unsigned freq;
+
+	// Left and right child
+	MinHeapNode *left, *right;
+
+	MinHeapNode(char data, unsigned freq)
+
+	{
+
+		left = right = NULL;
+		this->data = data;
+		this->freq = freq;
+	}
+};
+
+// For comparison of
+// two heap nodes (needed in min heap)
+struct compare {
+
+	bool operator()(MinHeapNode* l, MinHeapNode* r)
+
+	{
+		return (l->freq > r->freq);
+	}
+};
+
+// Prints huffman codes from
+// the root of Huffman Tree.
+void printCodes(struct MinHeapNode* root, string str)
+{
+
+	if (!root)
+		return;
+
+	if (root->data != '$')
+		cout << root->data << ": " << str << "\n";
+
+	printCodes(root->left, str + "0");
+	printCodes(root->right, str + "1");
+}
+
+// The main function that builds a Huffman Tree and
+// print codes by traversing the built Huffman Tree
+void HuffmanCodes(char data[], int freq[], int size)
+{
+	struct MinHeapNode *left, *right, *top;
+
+	// Create a min heap & inserts all characters of data[]
+	priority_queue<MinHeapNode*, vector<MinHeapNode*>, compare> minHeap;
+
+	for (int i = 0; i < size; ++i)
+		minHeap.push(new MinHeapNode(data[i], freq[i]));
+
+	// Iterate while size of heap doesn't become 1
+	while (minHeap.size() != 1) {
+
+		// Extract the two minimum
+		// freq items from min heap
+		left = minHeap.top();
+		minHeap.pop();
+
+		right = minHeap.top();
+		minHeap.pop();
+
+		// Create a new internal node with
+		// frequency equal to the sum of the
+		// two nodes frequencies. Make the
+		// two extracted node as left and right children
+		// of this new node. Add this node
+		// to the min heap '$' is a special value
+		// for internal nodes, not used
+		top = new MinHeapNode('$', left->freq + right->freq);
+
+		top->left = left;
+		top->right = right;
+
+		minHeap.push(top);
+	}
+
+	// Print Huffman codes using
+	// the Huffman tree built above
+	printCodes(minHeap.top(), "");
+}
+
+// Driver Code
+int main()
+{
+
+	char arr[] = { 'a', 'b', 'c', 'd', 'e', 'f' };
+	int freq[] = { 5, 9, 12, 13, 16, 45 };
+
+	int size = sizeof(arr) / sizeof(arr[0]);
+
+	HuffmanCodes(arr, freq, size);
+
+	return 0;
+}
+
+
+// C++ program to checks if a
+// binary tree is max heap or not
+#include <bits/stdc++.h>
+
+using namespace std;
+
+// Tree node structure
+struct Node {
+	int data;
+	struct Node* left;
+	struct Node* right;
+};
+
+// To add a new node
+struct Node* newNode(int k)
+{
+	struct Node* node = new Node;
+	node->data = k;
+	node->right = node->left = NULL;
+	return node;
+}
+
+bool isHeap(Node* root)
+{
+	// Your code here
+	queue<Node*> q;
+	q.push(root);
+	bool nullish = false;
+	while (!q.empty())
+	{
+		Node* temp = q.front();
+		q.pop();
+		if (temp->left)
+		{
+			if (nullish
+				|| temp->left->data
+				>= temp->data)
+			{
+				return false;
+			}
+			q.push(temp->left);
+		}
+		else {
+			nullish = true;
+		}
+		if (temp->right)
+		{
+			if (nullish
+				|| temp->right->data
+				>= temp->data)
+			{
+				return false;
+			}
+			q.push(temp->right);
+		}
+		else
+		{
+			nullish = true;
+		}
+	}
+	return true;
+}
+
+Time complexity: O(n^2 log (k)) 
+Auxiliary Space : O(k) for min-heap
+// CPP program to find the k-th largest sum
+// of subarray
+#include <bits/stdc++.h>
+using namespace std;
+
+// function to calculate kth largest element
+// in contiguous subarray sum
+int kthLargestSum(int arr[], int n, int k)
+{
+	// array to store predix sums
+	int sum[n + 1];
+	sum[0] = 0;
+	sum[1] = arr[0];
+	for (int i = 2; i <= n; i++)
+		sum[i] = sum[i - 1] + arr[i - 1];
+
+	// priority_queue of min heap
+	priority_queue<int, vector<int>, greater<int> > Q;
+
+	// loop to calculate the contiguous subarray
+	// sum position-wise
+	for (int i = 1; i <= n; i++)
+	{
+
+		// loop to traverse all positions that
+		// form contiguous subarray
+		for (int j = i; j <= n; j++)
+		{
+			// calculates the contiguous subarray
+			// sum from j to i index
+			int x = sum[j] - sum[i - 1];
+
+			// if queue has less then k elements,
+			// then simply push it
+			if (Q.size() < k)
+				Q.push(x);
+
+			else
+			{
+				// it the min heap has equal to
+				// k elements then just check
+				// if the largest kth element is
+				// smaller than x then insert
+				// else its of no use
+				if (Q.top() < x)
+				{
+					Q.pop();
+					Q.push(x);
+				}
+			}
+		}
+	}
+
+	// the top element will be then kth
+	// largest element
+	return Q.top();
+}
+
+
+int main() {
+  vector<int> v={-1,10,20,5,6,1,8,9,4};
+ buildheap1(v);
+  print(v);cout<<endl;
+ 
+  print(v);
+    Heap h(11,false);
+   // int n;cin>>n;
+    //bari bari bhejenge
+    
+   /* for(int i=0;i<n;i++){
+        int a;
+        cin>>a;
+       h.push(a);
+    }
+    //simply printing after formn
+   h.print();
+   cout<<endl;*/
+    //soritng and printing
+    while(!h.empty()){
+        cout<<h.top()<<" ";
+        h.pop();
+    }
+
+}

@@ -1,0 +1,768 @@
+Q1) queen problem
+
+//can do efficently by optimizing the checking travesal
+//checking from l to r so,only left,left-down and left-up check krna hai.
+
+/* A utility function to print solution */
+void printSolution(int board[N][N])
+{
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++)
+			printf(" %d ", board[i][j]);
+		printf("\n");
+	}
+}
+
+bool isSafe(int board[N][N], int row, int col)
+{
+	int i, j;
+
+	/* Check this row on left side */
+	for (i = 0; i < col; i++)
+		if (board[row][i])
+			return false;
+
+	/* Check upper diagonal on left side */
+	for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
+		if (board[i][j])
+			return false;
+
+	/* Check lower diagonal on left side */
+	for (i = row, j = col; j >= 0 && i < N; i++, j--)
+		if (board[i][j])
+			return false;
+
+	return true;
+}
+
+
+bool solveNQUtil(int board[N][N], int col)
+{
+	/* base case: If all queens are placed
+	then return true */
+	if (col >= N)
+		return true;
+
+	/* Consider this column and try placing
+	this queen in all rows one by one */
+	for (int i = 0; i < N; i++) {
+		/* Check if the queen can be placed on
+		board[i][col] */
+		if (isSafe(board, i, col)) {
+			/* Place this queen in board[i][col] */
+			board[i][col] = 1;
+
+			/* recur to place rest of the queens */
+			if (solveNQUtil(board, col + 1))
+				return true;
+
+			/* If placing queen in board[i][col]
+			doesn't lead to a solution, then
+			remove queen from board[i][col] */
+			board[i][col] = 0; // BACKTRACK
+		}
+	}
+
+	/* If the queen cannot be placed in any row in
+		this colum col then return false */
+	return false;
+}
+
+bool solveNQ()
+{
+	int board[N][N] = { { 0, 0, 0, 0 },
+						{ 0, 0, 0, 0 },
+						{ 0, 0, 0, 0 },
+						{ 0, 0, 0, 0 } };
+
+	if (solveNQUtil(board, 0) == false) {
+		printf("Solution does not exist");
+		return false;
+	}
+
+	printSolution(board);
+	return true;
+}
+
+Q2)Suduko solver tc: O(9^(n*n)). sc: O((n*n)). 
+
+/* A utility function to print grid */
+void print(int arr[N][N])
+{
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < N; j++)
+			cout << arr[i][j] << " ";
+		cout << endl;
+	}
+}
+/*another efficent of checking safe posn
+bool isValid(vector<vector<char>>& board, int row, int col, char c){
+        for(int i = 0; i < 9; i++) {
+            if(board[i][col] == c) 
+                return false; 
+            
+            if(board[row][i] == c) 
+                return false; 
+            
+            if(board[3 * (row / 3) + i / 3][3 * (col / 3) + i % 3] == c) 
+                return false; 
+        }
+        return true;
+    }
+*/
+bool isSafe(int grid[N][N], int row,int col, int num)					
+{
+	
+	// Check if we find the same num
+	// in the similar row , we
+	// return false
+	for (int x = 0; x <= 8; x++)
+		if (grid[row][x] == num)
+			return false;
+
+	// Check if we find the same num in
+	// the similar column , we
+	// return false
+	for (int x = 0; x <= 8; x++)
+		if (grid[x][col] == num)
+			return false;
+
+	// Check if we find the same num in
+	// the particular 3*3 matrix,
+	// we return false
+	int startRow = row - row % 3,
+			startCol = col - col % 3;
+
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++)
+			if (grid[i + startRow][j+startCol] == num)
+				return false;
+
+	return true;
+}
+
+
+bool solveSuduko(int grid[N][N], int row, int col)
+{
+	// Check if we have reached the 8th
+	// row and 9th column (0
+	// indexed matrix) , we are
+	// returning true to avoid
+	// further backtracking
+	if (row == N - 1 && col == N)
+		return true;
+
+	// Check if column value becomes 9 ,
+	// we move to next row and
+	// column start from 0
+	if (col == N) {
+		row++;
+		col = 0;
+	}
+
+	// Check if the current position of
+	// the grid already contains
+	// value >0, we iterate for next column
+	if (grid[row][col] > 0)
+		return solveSuduko(grid, row, col + 1);
+
+	for (int num = 1; num <= N; num++)
+	{
+		
+		// Check if it is safe to place
+		// the num (1-9) in the
+		// given row ,col ->we
+		// move to next column
+		if (isSafe(grid, row, col, num))
+		{
+			
+		/* Assigning the num in
+			the current (row,col)
+			position of the grid
+			and assuming our assined
+			num in the position
+			is correct	 */
+			grid[row][col] = num;
+		
+			// Checking for next possibility with next
+			// column
+			if (solveSuduko(grid, row, col + 1))
+				return true;
+		}
+	
+		// Removing the assigned num ,
+		// since our assumption
+		// was wrong , and we go for
+		// next assumption with
+		// diff num value
+		grid[row][col] = 0;
+	}
+	return false;
+}
+
+// Driver Code
+int main()
+{
+	// 0 means unassigned cells
+	int grid[N][N] = { { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
+					{ 5, 2, 0, 0, 0, 0, 0, 0, 0 },
+					{ 0, 8, 7, 0, 0, 0, 0, 3, 1 },
+					{ 0, 0, 3, 0, 1, 0, 0, 8, 0 },
+					{ 9, 0, 0, 8, 6, 3, 0, 0, 5 },
+					{ 0, 5, 0, 0, 9, 0, 6, 0, 0 },
+					{ 1, 3, 0, 0, 0, 0, 2, 5, 0 },
+					{ 0, 0, 0, 0, 0, 0, 0, 7, 4 },
+					{ 0, 0, 5, 2, 0, 6, 3, 0, 0 } };
+
+	if (solveSuduko(grid, 0, 0))
+		print(grid);
+	else
+		cout << "no solution exists " << endl;
+
+	return 0;
+}
+
+Q3)RAT IN A MAZE  tc:O(3^(n^2)). sc:O(3^(n^2)).(movement is allowed in all directions)
+
+
+// Function returns true if the
+// move taken is valid else
+// it will return false.
+bool isSafe(int row, int col, int m[][MAX],
+				int n, bool visited[][MAX])
+{
+	if (row == -1 || row == n || col == -1 ||
+				col == n || visited[row][col]
+						|| m[row][col] == 0)
+		return false;
+
+	return true;
+}
+
+// Function to print all the possible
+// paths from (0, 0) to (n-1, n-1).
+void printPathUtil(int row, int col, int m[][MAX],
+			int n, string& path, vector<string>&
+			possiblePaths, bool visited[][MAX])
+{
+	// This will check the initial point
+	// (i.e. (0, 0)) to start the paths.
+	if (row == -1 || row == n || col == -1
+			|| col == n || visited[row][col]
+						|| m[row][col] == 0)
+		return;
+
+	// If reach the last cell (n-1, n-1)
+	// then store the path and return
+	if (row == n - 1 && col == n - 1) {
+		possiblePaths.push_back(path);
+		return;
+	}
+
+	// Mark the cell as visited
+	visited[row][col] = true;
+
+	// Try for all the 4 directions (down, left,
+	// right, up) in the given order to get the
+	// paths in lexicographical order
+
+	// Check if downward move is valid
+	if (isSafe(row + 1, col, m, n, visited))
+	{
+		path.push_back('D');
+		printPathUtil(row + 1, col, m, n,
+				path, possiblePaths, visited);
+		path.pop_back();
+	}
+
+	// Check if the left move is valid
+	if (isSafe(row, col - 1, m, n, visited))
+	{
+		path.push_back('L');
+		printPathUtil(row, col - 1, m, n,
+				path, possiblePaths, visited);
+		path.pop_back();
+	}
+
+	// Check if the right move is valid
+	if (isSafe(row, col + 1, m, n, visited))
+	{
+		path.push_back('R');
+		printPathUtil(row, col + 1, m, n,
+				path, possiblePaths, visited);
+		path.pop_back();
+	}
+
+	// Check if the upper move is valid
+	if (isSafe(row - 1, col, m, n, visited))
+	{
+		path.push_back('U');
+		printPathUtil(row - 1, col, m, n,
+			path, possiblePaths, visited);
+		path.pop_back();
+	}
+
+	// Mark the cell as unvisited for
+	// other possible paths
+	visited[row][col] = false;
+}
+
+// Function to store and print
+// all the valid paths
+void printPath(int m[MAX][MAX], int n)
+{
+	// vector to store all the possible paths
+	vector<string> possiblePaths;
+	string path;
+	bool visited[n][MAX];
+	memset(visited, false, sizeof(visited));
+	
+	// Call the utility function to
+	// find the valid paths
+	printPathUtil(0, 0, m, n, path,
+					possiblePaths, visited);
+
+	// Print all possible paths
+	for (int i = 0; i < possiblePaths.size(); i++)
+		cout << possiblePaths[i] << " ";
+}
+
+// Driver code
+int main()
+{
+	int m[MAX][MAX] = { { 1, 0, 0, 0, 0 },
+						{ 1, 1, 1, 1, 1 },
+						{ 1, 1, 1, 0, 1 },
+						{ 0, 0, 0, 0, 1 },
+						{ 0, 0, 0, 0, 1 } };
+	int n = sizeof(m) / sizeof(m[0]);
+	printPath(m, n);
+
+	return 0;
+}
+
+//Given a string, print all possible palindromic partitions
+
+    vector<vector<string>> partition(string s) {
+        vector<vector<string> > res;
+        vector<string> path;
+        func(0, s, path, res);
+        return res;
+    }
+    
+    void func(int index, string s, vector<string> &path, 
+              vector<vector<string> > &res) {
+        if(index == s.size()) {
+            res.push_back(path);
+            return;
+        }
+        for(int i = index; i < s.size(); ++i) {
+            if(isPalindrome(s, index, i)) {
+                path.push_back(s.substr(index, i - index + 1));
+                func(i+1, s, path, res);
+                path.pop_back();
+            }
+        }
+    }
+    
+    bool isPalindrome(string s, int start, int end) {
+        while(start <= end) {
+            if(s[start++] != s[end--])
+                return false;
+        }
+        return true;
+    }
+};
+
+// C++ program for Knight Tour problem
+#include <bits/stdc++.h>
+using namespace std;
+
+#define N 8
+
+int solveKTUtil(int x, int y, int movei, int sol[N][N],
+				int xMove[], int yMove[]);
+
+/* A utility function to check if i,j are
+valid indexes for N*N chessboard */
+int isSafe(int x, int y, int sol[N][N])
+{
+	return (x >= 0 && x < N && y >= 0 && y < N
+			&& sol[x][y] == -1);
+}
+
+/* A utility function to print
+solution matrix sol[N][N] */
+void printSolution(int sol[N][N])
+{
+	for (int x = 0; x < N; x++) {
+		for (int y = 0; y < N; y++)
+			cout << " " << setw(2) << sol[x][y] << " ";
+		cout << endl;
+	}
+}
+
+/* This function solves the Knight Tour problem using
+Backtracking. This function mainly uses solveKTUtil()
+to solve the problem. It returns false if no complete
+tour is possible, otherwise return true and prints the
+tour.
+Please note that there may be more than one solutions,
+this function prints one of the feasible solutions. */
+int solveKT()
+{
+	int sol[N][N];
+
+	/* Initialization of solution matrix */
+	for (int x = 0; x < N; x++)
+		for (int y = 0; y < N; y++)
+			sol[x][y] = -1;
+
+	/* xMove[] and yMove[] define next move of Knight.
+	xMove[] is for next value of x coordinate
+	yMove[] is for next value of y coordinate */
+	int xMove[8] = { 2, 1, -1, -2, -2, -1, 1, 2 };
+	int yMove[8] = { 1, 2, 2, 1, -1, -2, -2, -1 };
+
+	// Since the Knight is initially at the first block
+	sol[0][0] = 0;
+
+	/* Start from 0,0 and explore all tours using
+	solveKTUtil() */
+	if (solveKTUtil(0, 0, 1, sol, xMove, yMove) == 0) {
+		cout << "Solution does not exist";
+		return 0;
+	}
+	else
+		printSolution(sol);
+
+	return 1;
+}
+
+/* A recursive utility function to solve Knight Tour
+problem */
+int solveKTUtil(int x, int y, int movei, int sol[N][N],
+				int xMove[N], int yMove[N])
+{
+	int k, next_x, next_y;
+	if (movei == N * N)
+		return 1;
+
+	/* Try all next moves from
+	the current coordinate x, y */
+	for (k = 0; k < 8; k++) {
+		next_x = x + xMove[k];
+		next_y = y + yMove[k];
+		if (isSafe(next_x, next_y, sol)) {
+			sol[next_x][next_y] = movei;
+			if (solveKTUtil(next_x, next_y, movei + 1, sol,
+							xMove, yMove)
+				== 1)
+				return 1;
+			else
+				
+			// backtracking
+				sol[next_x][next_y] = -1;
+		}
+	}
+	return 0;
+}
+
+//TUG OF WAR TC=O(2^n)
+//java mei hai c++,mei kr lena
+static int mindiff = Integer.MAX_VALUE;
+static String ans = "";
+public static void solve(int[] arr, int vidx, ArrayList set1, ArrayList set2, int soset1, int soset2) {
+  if (vidx == arr.length) {
+    if (Math.abs(soset1 - soset2) < mindiff) {
+      mindiff = Math.abs(soset1 - soset2);
+      ans = set1 + " " + set2;
+    }
+    return;
+  }
+
+  if (set1.size() < (arr.length + 1) / 2) {
+    set1.add(arr[vidx]);
+    solve(arr, vidx + 1, set1, set2, soset1 + arr[vidx], soset2);
+    set1.remove(set1.size() - 1);
+  }
+
+  if (set2.size() < (arr.length + 1) / 2) {
+    set2.add(arr[vidx]);
+    solve(arr, vidx + 1, set1, set2, soset1, soset2 + arr[vidx]);
+    set2.remove(set2.size() - 1);
+  }
+}
+/* C program for solution of Hamiltonian Cycle problem
+using backtracking */
+#include<stdio.h>
+
+// Number of vertices in the graph
+#define V 5
+
+void printSolution(int path[]);
+
+/* A utility function to check if the vertex v can be added at
+index 'pos' in the Hamiltonian Cycle constructed so far (stored
+in 'path[]') */
+bool isSafe(int v, bool graph[V][V], int path[], int pos)
+{
+	/* Check if this vertex is an adjacent vertex of the previously
+	added vertex. */
+	if (graph [ path[pos-1] ][ v ] == 0)
+		return false;
+
+	/* Check if the vertex has already been included.
+	This step can be optimized by creating an array of size V */
+	for (int i = 0; i < pos; i++)
+		if (path[i] == v)
+			return false;
+
+	return true;
+}
+
+/* A recursive utility function to solve hamiltonian cycle problem */
+bool hamCycleUtil(bool graph[V][V], int path[], int pos)
+{
+	/* base case: If all vertices are included in Hamiltonian Cycle */
+	if (pos == V)
+	{
+		// And if there is an edge from the last included vertex to the
+		// first vertex
+		if ( graph[ path[pos-1] ][ path[0] ] == 1 )
+		return true;
+		else
+		return false;
+	}
+
+	// Try different vertices as a next candidate in Hamiltonian Cycle.
+	// We don't try for 0 as we included 0 as starting point in hamCycle()
+	for (int v = 1; v < V; v++)
+	{
+		/* Check if this vertex can be added to Hamiltonian Cycle */
+		if (isSafe(v, graph, path, pos))
+		{
+			path[pos] = v;
+
+			/* recur to construct rest of the path */
+			if (hamCycleUtil (graph, path, pos+1) == true)
+				return true;
+
+			/* If adding vertex v doesn't lead to a solution,
+			then remove it */
+			path[pos] = -1;
+		}
+	}
+
+	/* If no vertex can be added to Hamiltonian Cycle constructed so far,
+	then return false */
+	return false;
+}
+
+/* This function solves the Hamiltonian Cycle problem using Backtracking.
+It mainly uses hamCycleUtil() to solve the problem. It returns false
+if there is no Hamiltonian Cycle possible, otherwise return true and
+prints the path. Please note that there may be more than one solutions,
+this function prints one of the feasible solutions. */
+bool hamCycle(bool graph[V][V])
+{
+	int *path = new int[V];
+	for (int i = 0; i < V; i++)
+		path[i] = -1;
+
+	/* Let us put vertex 0 as the first vertex in the path. If there is
+	a Hamiltonian Cycle, then the path can be started from any point
+	of the cycle as the graph is undirected */
+	path[0] = 0;
+	if ( hamCycleUtil(graph, path, 1) == false )
+	{
+		printf("\nSolution does not exist");
+		return false;
+	}
+
+	printSolution(path);
+	return true;
+}
+
+/* A utility function to print solution */
+void printSolution(int path[])
+{
+	printf ("Solution Exists:"
+			" Following is one Hamiltonian Cycle \n");
+	for (int i = 0; i < V; i++)
+		printf(" %d ", path[i]);
+
+	// Let us print the first vertex again to show the complete cycle
+	printf(" %d ", path[0]);
+	printf("\n");
+}
+
+// driver program to test above function
+int main()
+{
+/* Let us create the following graph
+	(0)--(1)--(2)
+	| / \ |
+	| / \ |
+	| /	 \ |
+	(3)-------(4) */
+bool graph1[V][V] = {{0, 1, 0, 1, 0},
+					{1, 0, 1, 1, 1},
+					{0, 1, 0, 0, 1},
+					{1, 1, 0, 0, 1},
+					{0, 1, 1, 1, 0},
+					};
+
+	// Print the solution
+	hamCycle(graph1);
+
+/* Let us create the following graph
+	(0)--(1)--(2)
+	| / \ |
+	| / \ |
+	| /	 \ |
+	(3)	 (4) */
+	bool graph2[V][V] = {{0, 1, 0, 1, 0},
+					{1, 0, 1, 1, 1},
+					{0, 1, 0, 0, 1},
+					{1, 1, 0, 0, 0},
+					{0, 1, 1, 0, 0},
+					};
+
+	// Print the solution
+	hamCycle(graph2);
+
+	return 0;
+}
+
+// Program to find if there is a simple path with
+// weight more than k
+#include<bits/stdc++.h>
+using namespace std;
+
+// iPair ==> Integer Pair
+typedef pair<int, int> iPair;
+
+// This class represents a dipathted graph using
+// adjacency list representation
+class Graph
+{
+	int V; // No. of vertices
+
+	// In a weighted graph, we need to store vertex
+	// and weight pair for every edge
+	list< pair<int, int> > *adj;
+	bool pathMoreThanKUtil(int src, int k, vector<bool> &path);
+
+public:
+	Graph(int V); // Constructor
+
+	// function to add an edge to graph
+	void addEdge(int u, int v, int w);
+	bool pathMoreThanK(int src, int k);
+};
+
+// Returns true if graph has path more than k length
+bool Graph::pathMoreThanK(int src, int k)
+{
+	// Create a path array with nothing included
+	// in path
+	vector<bool> path(V, false);
+
+	// Add source vertex to path
+	path[src] = 1;
+
+	return pathMoreThanKUtil(src, k, path);
+}
+
+// Prints shortest paths from src to all other vertices
+bool Graph::pathMoreThanKUtil(int src, int k, vector<bool> &path)
+{
+	// If k is 0 or negative, return true;
+	if (k <= 0)
+		return true;
+
+	// Get all adjacent vertices of source vertex src and
+	// recursively explore all paths from src.
+	list<iPair>::iterator i;
+	for (i = adj[src].begin(); i != adj[src].end(); ++i)
+	{
+		// Get adjacent vertex and weight of edge
+		int v = (*i).first;
+		int w = (*i).second;
+
+		// If vertex v is already there in path, then
+		// there is a cycle (we ignore this edge)
+		if (path[v] == true)
+			continue;
+
+		// If weight of is more than k, return true
+		if (w >= k)
+			return true;
+
+		// Else add this vertex to path
+		path[v] = true;
+
+		// If this adjacent can provide a path longer
+		// than k, return true.
+		if (pathMoreThanKUtil(v, k-w, path))
+			return true;
+
+		// Backtrack
+		path[v] = false;
+	}
+
+	// If no adjacent could produce longer path, return
+	// false
+	return false;
+}
+
+// Allocates memory for adjacency list
+Graph::Graph(int V)
+{
+	this->V = V;
+	adj = new list<iPair> [V];
+}
+
+// Utility function to an edge (u, v) of weight w
+void Graph::addEdge(int u, int v, int w)
+{
+	adj[u].push_back(make_pair(v, w));
+	adj[v].push_back(make_pair(u, w));
+}
+
+// Driver program to test methods of graph class
+int main()
+{
+	// create the graph given in above fugure
+	int V = 9;
+	Graph g(V);
+
+	// making above shown graph
+	g.addEdge(0, 1, 4);
+	g.addEdge(0, 7, 8);
+	g.addEdge(1, 2, 8);
+	g.addEdge(1, 7, 11);
+	g.addEdge(2, 3, 7);
+	g.addEdge(2, 8, 2);
+	g.addEdge(2, 5, 4);
+	g.addEdge(3, 4, 9);
+	g.addEdge(3, 5, 14);
+	g.addEdge(4, 5, 10);
+	g.addEdge(5, 6, 2);
+	g.addEdge(6, 7, 1);
+	g.addEdge(6, 8, 6);
+	g.addEdge(7, 8, 7);
+
+	int src = 0;
+	int k = 62;
+	g.pathMoreThanK(src, k)? cout << "Yes\n" :
+							cout << "No\n";
+
+	k = 60;
+	g.pathMoreThanK(src, k)? cout << "Yes\n" :
+							cout << "No\n";
+
+	return 0;
+}

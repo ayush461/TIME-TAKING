@@ -1,0 +1,624 @@
+//BST mei inorder ka socha kro thoda
+//global variables are passed by refrence automatically.
+#include <iostream>
+#include<cmath>
+#include<queue>
+#include<climits>
+using namespace std;
+
+class node{
+public:
+        int data;
+        node *left;
+        node* right;
+        node(int d){
+           data=d;
+           right=NULL;
+           left=NULL;
+        }
+
+};
+//for making the original trr
+node* insertinBST(node* root,int dataa){
+if(root==NULL){
+    return new node(dataa);
+}
+if(root->data > dataa){
+  root->left= insertinBST(root->left,dataa);
+}else{
+root->right=insertinBST(root->right,dataa);
+}
+return root;
+}
+//for accepting all the values of node
+node* buildtree(){//using recursion
+    int value;
+    cin>>value;
+    node* root=NULL;
+    while(value!=-1){
+       root=insertinBST(root,value);
+        cin>>value;
+    }
+ 
+
+return root;
+}
+//for searching in bst
+bool searching(node* root,int key){
+    if(root==NULL){
+        return false;
+    }
+    if(root->data==key){
+        return true;
+    }
+    if(root->data > key){
+      return searching(root->left,key);
+    }
+    return searching(root->right,key);
+    
+}
+//for deletion in bst
+node* dbst(node* root,int no){
+    if(root==NULL){
+        return NULL;
+    }
+    
+    if(root->data>no){
+       root->left=dbst(root->left,no);
+        return root;
+    }
+    else if(root->data==no){
+//if it is leaf node
+if(root->left==NULL and root->right==NULL){
+    delete root;
+    return NULL;
+}
+// if it has one left child
+if(root->left!=NULL and root->right==NULL){
+   node *temp=root->left;
+   delete root;
+    return temp;
+}
+// if it has one right child
+if(root->left==NULL and root->right!=NULL){
+     node *temp=root->left;
+   delete root;
+    return temp;
+    
+}
+//if it has 2 child,here we are takin inorder successor
+//u can take inorder predeccor also
+node* replace=root->right;
+while(replace->left!=NULL){
+    replace=replace->left;
+}
+root->data=replace->data;
+root->right=dbst(root->right,replace->data);
+return root;
+    }else{
+       root->right=dbst(root->right,no);
+       return root;
+    }
+}
+//for checking a tree is bst or not,top-down approach
+bool isbst(node* root,int minv=INT_MIN,int maxv=INT_MAX){
+    if(root==NULL){
+        return true;//yaha false kyu ni hua
+    }
+    if(root->data>minv and root->data<maxv and isbst(root->left,minv,root->data) and isbst(root->right,root->data,maxv)){
+        return true;
+
+    }
+    return false;
+}
+//for converting bst into sorted sll
+class Linkedlist{
+    public:
+    
+    node* head;
+    node *tail;
+
+};
+Linkedlist convert(node*root){
+Linkedlist ll;
+    if(root==NULL){
+  ll.head=ll.tail=NULL;
+    return ll;
+    }
+    //for single node in bst
+    if(root->left==NULL and root->right==NULL){
+       
+        ll.head=root;
+        ll.tail=root;
+        return ll;}
+    //for only root and lsubtree
+    if(root->left!=NULL and root->right==NULL){
+        Linkedlist lt=convert(root->left);
+        lt.tail->right=root;
+        ll.head=lt.head;
+        ll.tail=root;
+        return ll;
+    }
+    //for only root and rsubtree
+    if(root->left==NULL and root->right!=NULL){
+        Linkedlist rt=convert(root->right);
+        root->right=rt.head;
+        ll.head=root;
+        ll.tail=rt.tail;
+        return ll;
+}
+//both sides not null
+Linkedlist lt=convert(root->left);
+Linkedlist rt=convert(root->right);
+lt.tail->right=root;
+root->right=rt.head;
+
+ll.head=lt.head;
+ll.tail=rt.tail;
+return ll;
+
+}
+//for printing or sorting(smart move)
+void inorder(node* root){
+    if(root==NULL){
+        return;
+    }
+    inorder(root->left);
+    cout<<root->data<<" ";
+    inorder(root->right);
+}
+//for printing lvl by lvl
+void bfs(node *root){
+    queue<node*>q;
+    q.push(root);
+    q.push(NULL);
+    while(!q.empty()){
+        node *f=q.front();
+         if(f==NULL){
+          cout<<endl;
+          q.pop();
+          if(!q.empty()){
+            q.push(NULL);}
+      }else{
+        cout<<f->data<<", ";
+      q.pop();
+     
+       
+        if(f->left!=NULL){
+            q.push(f->left);
+        }
+        if(f->right!=NULL){
+            q.push(f->right);
+        }
+      }
+    }
+
+}
+// C++ program to convert a left unbalanced BST to IN O(N)TIME
+// a balanced BST
+
+/* This function traverse the skewed binary tree and
+stores its nodes pointers in vector nodes[] */
+void storeBSTNodes(Node* root, vector<Node*> &nodes)
+{
+	// Base case
+	if (root==NULL)
+		return;
+
+	// Store nodes in Inorder (which is sorted
+	// order for BST)
+	storeBSTNodes(root->left, nodes);
+	nodes.push_back(root);
+	storeBSTNodes(root->right, nodes);
+}
+
+/* Recursive function to construct binary tree */
+Node* buildTreeUtil(vector<Node*> &nodes, int start,
+				int end)
+{
+	// base case
+	if (start > end)
+		return NULL;
+
+	/* Get the middle element and make it root */
+	int mid = (start + end)/2;
+	Node *root = nodes[mid];//yaha pura node ghusa rhe na ki sirf data ie:no newnode(node[mid]);
+
+	/* Using index in Inorder traversal, construct
+	left and right subtress */
+	root->left = buildTreeUtil(nodes, start, mid-1);
+	root->right = buildTreeUtil(nodes, mid+1, end);
+
+	return root;
+}
+
+// This functions converts an unbalanced BST to
+// a balanced BST
+Node* buildTree(Node* root)
+{
+	// Store nodes of given BST in sorted order
+	vector<Node *> nodes;
+	storeBSTNodes(root, nodes);
+
+	// Constucts BST from nodes[]
+	int n = nodes.size();
+	return buildTreeUtil(nodes, 0, n-1);
+}
+
+/* A O(n) program for construction
+of BST from preorder traversal */
+#include <bits/stdc++.h>
+using namespace std;
+
+/* A binary tree node has data, pointer to left child
+and a pointer to right child */
+class node {
+public:
+	int data;
+	node* left;
+	node* right;
+};
+
+// A utility function to create a node
+node* newNode(int data)
+{
+	node* temp = new node();
+
+	temp->data = data;
+	temp->left = temp->right = NULL;
+
+	return temp;
+}
+// C++ program to Merge Two Balanced Binary Search Trees and make balace again,in O(M+N)time .
+#include<bits/stdc++.h>
+using namespace std;
+
+
+// A utility unction to merge two sorted arrays into one
+int *merge(int arr1[], int arr2[], int m, int n);
+
+// A helper function that stores inorder
+// traversal of a tree in inorder array
+void storeInorder(node* node, int inorder[],
+							int *index_ptr);
+
+/* A function that constructs Balanced
+Binary Search Tree from a sorted array
+See https://www.geeksforgeeks.org/sorted-array-to-balanced-bst/ */
+node* sortedArrayToBST(int arr[], int start, int end);
+
+/* This function merges two balanced
+BSTs with roots as root1 and root2.
+m and n are the sizes of the trees respectively */
+node* mergeTrees(node *root1, node *root2, int m, int n)
+{
+	// Store inorder traversal of
+	// first tree in an array arr1[]
+	int *arr1 = new int[m];
+	int i = 0;
+	storeInorder(root1, arr1, &i);
+
+	// Store inorder traversal of second
+	// tree in another array arr2[]
+	int *arr2 = new int[n];
+	int j = 0;
+	storeInorder(root2, arr2, &j);
+
+	// Merge the two sorted array into one
+	int *mergedArr = merge(arr1, arr2, m, n);
+
+	// Construct a tree from the merged
+	// array and return root of the tree
+	return sortedArrayToBST (mergedArr, 0, m + n - 1);
+}
+
+
+
+// A utility function to print inorder
+// traversal of a given binary tree
+void printInorder(node* node)
+{
+	if (node == NULL)
+		return;
+
+	/* first recur on left child */
+	printInorder(node->left);
+
+	cout << node->data << " ";
+
+	/* now recur on right child */
+	printInorder(node->right);
+}
+
+// A utility unction to merge
+// two sorted arrays into one
+int *merge(int arr1[], int arr2[], int m, int n)
+{
+	// mergedArr[] is going to contain result
+	int *mergedArr = new int[m + n];
+	int i = 0, j = 0, k = 0;
+
+	// Traverse through both arrays
+	while (i < m && j < n)
+	{
+		// Pick the smaller element and put it in mergedArr
+		if (arr1[i] < arr2[j])
+		{
+			mergedArr[k] = arr1[i];
+			i++;
+		}
+		else
+		{
+			mergedArr[k] = arr2[j];
+			j++;
+		}
+		k++;
+	}
+
+	// If there are more elements in first array
+	while (i < m)
+	{
+		mergedArr[k] = arr1[i];
+		i++; k++;
+	}
+
+	// If there are more elements in second array
+	while (j < n)
+	{
+		mergedArr[k] = arr2[j];
+		j++; k++;
+	}
+
+	return mergedArr;
+}
+
+// A helper function that stores inorder
+// traversal of a tree rooted with node
+void storeInorder(node* node, int inorder[], int *index_ptr)
+{
+	if (node == NULL)
+		return;
+
+	/* first recur on left child */
+	storeInorder(node->left, inorder, index_ptr);
+
+	inorder[*index_ptr] = node->data;
+	(*index_ptr)++; // increase index for next entry
+
+	/* now recur on right child */
+	storeInorder(node->right, inorder, index_ptr);
+}
+
+
+// A recursive function to construct IN O(N)TIME.
+// BST from pre[]. preIndex is used
+// to keep track of index in pre[].
+node* constructTreeUtil(int pre[], int* preIndex, int key,
+						int min, int max, int size)
+{
+	// Base case
+	if (*preIndex >= size)
+		return NULL;
+
+	node* root = NULL;
+
+	// If current element of pre[] is in range, then
+	// only it is part of current subtree
+	if (key > min && key < max) {
+		// Allocate memory for root of this
+		// subtree and increment *preIndex
+		root = newNode(key);
+		*preIndex = *preIndex + 1;
+
+		if (*preIndex < size) {
+			// Construct the subtree under root
+			// All nodes which are in range
+			// {min .. key} will go in left
+			// subtree, and first such node
+			// will be root of left subtree.
+			root->left = constructTreeUtil(pre, preIndex,
+										pre[*preIndex],
+										min, key, size);
+		}
+		if (*preIndex < size) {
+			// All nodes which are in range
+			// {key..max} will go in right
+			// subtree, and first such node
+			// will be root of right subtree.
+			root->right = constructTreeUtil(pre, preIndex,
+											pre[*preIndex],
+											key, max, size);
+		}
+	}
+
+	return root;
+}
+
+// The main function to construct BST
+// from given preorder traversal.
+// This function mainly uses constructTreeUtil()
+node* constructTree(int pre[], int size)
+{
+	int preIndex = 0;
+	return constructTreeUtil(pre, &preIndex, pre[0],
+							INT_MIN, INT_MAX, size);
+}
+
+
+//You need to find the inorder successor and predecessor of a given key. In case,
+//if the either of predecessor or successor is not found print -1
+//PREDE=ONE L,THEN EXTREME R
+//SUCCSE=ONE R,THEN EXTREME L
+void findPreSuc(Node* root, Node*& pre, Node*& suc, int val)
+{
+if(!root)
+return;
+
+while(root and root->key != val){
+if( val>root->key ){
+pre = root;
+root = root -> right;
+
+}
+else {
+suc = root;
+root = root -> left;
+}
+}
+//for P
+if(root!=null){
+Node *temp = root;
+if(root->left){
+root = root->left;
+while(root->right)
+root = root->right;
+pre = root;
+}
+//for S
+root = temp;
+if(root->right){
+root = root->right;
+while(root->left)
+root = root->left;
+suc = root;
+}
+}
+}
+
+								//N ARY TREES
+
+
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+    }
+
+    Node(int _val, vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+class Solution {
+public:
+    void cal(Node* root,vector<int>&ans){
+        
+        if(root==NULL)
+            return ;
+        ans.push_back(root->val);
+        for(auto it:root->children){//us root ka child vector ke liye call kro
+            cal(it,ans);
+        }
+        return;        
+        
+    }
+    vector<int> preorder(Node* root) {
+        
+        vector<int>ans;
+        if(root==NULL)
+            return ans;
+        cal(root,ans);
+        return ans;
+    }
+};
+
+//ITERATIVE ,METHOD 
+    vector<int> preorder(Node* root) {
+        vector<int> result;
+        if (root == nullptr) {
+            return result;
+        }
+        
+        stack<Node*> stk;
+        stk.push(root);
+        while (!stk.empty()) {
+            Node* cur = stk.top();
+            stk.pop();
+            result.push_back(cur -> val);
+            for (int i = cur -> children.size() - 1; i >= 0; i--) {
+                if (cur -> children[i] != nullptr) {
+                    stk.push(cur -> children[i]);
+                }
+            }
+        }
+        return result;
+}
+
+//ITERATIVE ,METHOD 
+vector<int> postorder(Node* root) {
+        if(root==NULL)
+            return vector<int>();
+        stack<Node*> st;
+        Node *p=root;
+        st.push(p);
+        list<int> res;
+        while(!st.empty()){
+            p=st.top();
+            st.pop();
+            res.push_front(p->val);
+            for(int i=0;i<p->children.size();++i)
+                st.push(p->children[i]);
+        }
+        return vector<int>(res.begin(),res.end());
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int main(){
+
+node* base=buildtree();
+//bfs(base);
+cout<<endl;
+inorder(base);
+cout<<endl;
+if(searching(base,78)){
+    cout<<"found\n";
+}else{
+    cout<<"not found\n";
+}
+if(isbst(base)){
+    cout<<"tree bst hai\n";
+}else{
+    cout<<"tree bst ni hai\n";
+}
+dbst(base,3);
+//inorder(base);
+Linkedlist l= convert(base);
+node* ptr=l.head;
+while(ptr!=NULL){
+    cout<<ptr->data<<"->";
+    ptr=ptr->right;
+}
+
+    return 0;
+}

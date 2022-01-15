@@ -1,0 +1,51 @@
+
+Q1)Find the unique number in arr
+
+ISME unique no do half mei arr divide kr rha
+At end high will be just before the partion and low will be just after the parriton pointing to the no.
+left half:first instance=even,second inst=odd;
+right half:first instance=odd,second inst=even;
+O(LogN) and O(1),cool use of bit(odd^1 will give even no just before odd and,even^1  will give just after odd no)
+int singleNonDuplicate(vector<int>& nums) {
+        int low = 0, high = nums.size() - 2; //if the req no is last then where low will go,isliye -2;
+        while(low <= high) {
+            int mid = (low + high) >> 1; 
+            if(nums[mid] == nums[mid^1]) {
+                low = mid + 1; //for left half
+            } 
+            else {
+                high = mid - 1;//for right half
+            }
+        }
+        return nums[low]; 
+    }
+
+Q2)FIND THE NO IN SORTED,ROTATED ARR
+O(LogN) and O(1)
+    int search(vector<int>& a, int target) {
+        int low = 0, high = a.size() - 1; 
+        while(low <= high) {
+            int mid = (low + high) >> 1; 
+            if(a[mid] == target) return mid; 
+            
+            // the left side is sorted
+            if(a[low] <= a[mid]) {and target lies in between
+                if(target >= a[low] && target <= a[mid]) {
+                    high = mid - 1; 
+                }
+                else {
+                    low = mid + 1; 
+                }
+            }
+          // the right side is sorted
+            else {
+                if(target >= a[mid] && target <= a[high]) {
+                    low = mid + 1; 
+                }
+                else {
+                    high = mid - 1; 
+                }
+            }
+        } 
+        return -1; 
+    }

@@ -1,0 +1,552 @@
+                   A sorting algorithm is said to be stable if it maintains the relative order of records in the case of equality of keys. 
+                        A stable algorithm produces first output. ... 
+                             QuickSort is an unstable algorithm because we do swapping of elements according to pivot's position 
+                                                                               (without considering their original positions)
+
+//it returns an iterator ie:dont store in a string
+//convert complete string to lowercase 
+transform(s.begin(), s.end(), s.begin(), ::tolower);
+
+int cmp(int a,int b)
+{
+    return a<b;//ascending order
+   return a>b;//descding order
+}
+
+Q1) Quick sorting
+
+best tc:O(NLOGN) when each time pivot is mid point,sc:O(N)
+wrost tc:O(N^2) wehn arry is already sorted,sc:O(N)
+
+/* C++ implementation of QuickSort */
+
+
+// A utility function to swap two elements
+void swap(int* a, int* b)
+{
+	int t = *a;
+	*a = *b;
+	*b = t;
+}
+
+/* This function takes last element as pivot, places
+the pivot element at its correct position in sorted
+array, and places all smaller (smaller than pivot)
+to left of pivot and all greater elements to right
+of pivot */
+int partition (int arr[], int low, int high)
+{
+	int pivot = arr[low+(high-low)/2]; // pivot point for optimization
+	int i = (low); // Index of smaller element and indicates the right position of pivot found so far
+     int j = high;
+	while(j>i){
+   while (arr[j] >pivot)
+		{
+			j--; // indexec of larger element
+		
+		}
+        while (arr[i] <=pivot)
+		{
+			i++; // increment index of smaller element
+		
+	}
+if(i<j){
+    	swap(&arr[i], &arr[j]);
+}
+
+
+    }
+	swap(&arr[j], &arr[low]);
+	return j;
+}
+
+/* The main function that implements QuickSort
+arr[] --> Array to be sorted,
+low --> Starting index,
+high --> Ending index */
+void quickSort(int arr[], int low, int high)
+{
+	if (low < high)
+	{
+		/* pi is partitioning index, arr[p] is now
+		at right place */
+		int pi = partition(arr, low, high);
+
+		// Separately sort elements before
+		// partition and after partition
+		quickSort(arr, low, pi - 1);
+		quickSort(arr, pi + 1, high);
+	}
+}
+
+/* Function to print an array */
+void printArray(int arr[], int size)
+{
+	int i;
+	for (i = 0; i < size; i++)
+		cout << arr[i] << " ";
+	cout << endl;
+}
+
+Q2)MERGE SORT
+FOR ALL  tc:O(NLOGN)
+  isme har baar arr/2 hota rhta,quick sort mei pivot point se divide hota 
+void merge(int arr[], int l, int m, int r)
+    {
+int b[l+r];//taking temp array
+   int i=l;
+int j=m+1;
+int k=l;
+        while (i <=m && j<=r)
+        {
+            if (arr[i] < arr[j])
+            {
+                b[k] = arr[i];
+                i++;
+            }
+            else
+            {
+                b[k] = arr[j];
+                j++;
+            }
+            k++;
+        }
+    
+        /* Copy the remaining elements of L[], if there
+           are any */
+        while (i <=m )
+        {
+            b[k] = arr[i];
+            i++;
+            k++;
+        }
+    
+        /* Copy the remaining elements of R[], if there
+           are any */
+        while (j <=r)
+        {
+            b[k] = arr[j];
+            j++;
+            k++;
+        }
+// imp line as puting back to arr from sorted b
+        for(int i=l;i<=r;i++)
+        arr[i]=b[i];
+    }
+    
+    void mergeSort(int arr[], int l, int r)
+    {
+        if (l < r)
+        {
+            // Same as (l+r)/2, but avoids overflow for
+            // large l and h
+            int m = l+(r-l)/2;
+    
+            // Sort first and second halves
+            mergeSort(arr, l, m);
+            mergeSort(arr, m+1, r);
+    
+            merge(arr, l, m, r);
+        }
+    }
+
+//O(N^2) GENERALLY
+ Insertion sort takes maximum time to sort if elements are sorted in reverse order.
+ And it takes minimum time (Order of n) when elements are already sorted.
+// C++ program for insertion sort
+#include <bits/stdc++.h>
+using namespace std;
+
+/* Function to sort an array using insertion sort*/
+void insertionSort(int arr[], int n)
+{
+	int i, key, j;
+	for (i = 1; i < n; i++)
+	{
+		key = arr[i];
+		j = i - 1;
+
+		/* Move elements of arr[0..i-1], that are
+		greater than key, to one position ahead
+		of their current position */
+		while (j >= 0 && arr[j] > key)
+		{
+			arr[j + 1] = arr[j];
+			j = j - 1;
+		}
+		arr[j + 1] = key;
+	}
+}
+
+// Merging two sorted arrays with O(1) in O(N+M)
+// extra space
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to find next gap.
+int nextGap(int gap)
+{
+	if (gap <= 1)
+		return 0;
+	return (gap / 2) + (gap % 2);
+}
+
+void merge(int* arr1, int* arr2, int n, int m)
+{
+	int i, j, gap = n + m;
+	for (gap = nextGap(gap);
+		gap > 0; gap = nextGap(gap))
+	{
+		// comparing elements in the first array.
+		for (i = 0; i + gap < n; i++)
+			if (arr1[i] > arr1[i + gap])
+				swap(arr1[i], arr1[i + gap]);
+
+		// comparing elements in both arrays.
+		for (j = gap > n ? gap - n : 0;
+			i < n && j < m;
+			i++, j++)
+			if (arr1[i] > arr2[j])
+				swap(arr1[i], arr2[j]);
+
+		if (j < m) {
+			// comparing elements in the second array.
+			for (j = 0; j + gap < m; j++)
+				if (arr2[j] > arr2[j + gap])
+					swap(arr2[j], arr2[j + gap]);
+		}
+	}
+}
+
+
+
+// C++ program for implementation of selection sortO(N^2)
+#include <bits/stdc++.h>
+using namespace std;
+
+void swap(int *xp, int *yp)
+{
+	int temp = *xp;
+	*xp = *yp;
+	*yp = temp;
+}
+
+void selectionSort(int arr[], int n)
+{
+	int i, j, min_idx;
+
+	// One by one move boundary of unsorted subarray
+	for (i = 0; i < n-1; i++)
+	{
+		// Find the minimum element in unsorted array
+		min_idx = i;
+		for (j = i+1; j < n; j++)
+		if (arr[j] < arr[min_idx])
+			min_idx = j;
+
+		// Swap the found minimum element with the first element
+		swap(&arr[min_idx], &arr[i]);
+	}
+}
+
+
+
+
+// C++ implementation of Shell Sort,O(n^2)
+#include <iostream>
+using namespace std;
+
+/* function to sort arr using shellSort */
+int shellSort(int arr[], int n)
+{
+	// Start with a big gap, then reduce the gap
+	for (int gap = n/2; gap > 0; gap /= 2)
+	{
+		// Do a gapped insertion sort for this gap size.
+		// The first gap elements a[0..gap-1] are already in gapped order
+		// keep adding one more element until the entire array is
+		// gap sorted
+		for (int i = gap; i < n; i += 1)
+		{
+			// add a[i] to the elements that have been gap sorted
+			// save a[i] in temp and make a hole at position i
+			int temp = arr[i];
+
+			// shift earlier gap-sorted elements up until the correct
+			// location for a[i] is found
+			int j;		
+			for (j = i; j >= gap && arr[j - gap] > temp; j -= gap)
+				arr[j] = arr[j - gap];
+			
+			// put temp (the original a[i]) in its correct location
+			arr[j] = temp;
+		}
+	}
+	return 0;
+}
+
+void printArray(int arr[], int n)
+{
+	for (int i=0; i<n; i++)
+		cout << arr[i] << " ";
+}
+
+
+// C++ implementation of the approach
+#include <bits/stdc++.h>
+using namespace std;
+
+#define MAX 26
+
+// Function to return the sorted string
+string getSortedString(string s, int n)
+{
+
+	// To store the frequencies of the
+	// lowercase and the uppercase
+	// characters in the given string
+	int lower[MAX] = { 0 };
+	int upper[MAX] = { 0 };
+
+	for (int i = 0; i < n; i++) {
+
+		// If current character is lowercase then
+		// increment its frequency in
+		// the lower[] array
+		if (islower(s[i]))
+			lower[s[i] - 'a']++;
+
+		// Else increment in the upper[] array
+		else if (isupper(s[i]))
+			upper[s[i] - 'A']++;
+	}
+
+	// Pointers that point to the smallest lowercase
+	// and the smallest uppercase characters
+	// respectively in the given string
+	int i = 0, j = 0;
+	while (i < MAX && lower[i] == 0)
+		i++;
+
+	while (j < MAX && upper[j] == 0)
+		j++;
+
+	// For every character in the given string
+	for (int k = 0; k < n; k++) {
+
+		// If the current character is lowercase
+		// then replace it with the smallest
+		// lowercase character available
+		if (islower(s[k])) {
+			while (lower[i] == 0)
+				i++;
+			s[k] = (char)(i + 'a');
+
+			// Decrement the frequency
+			// of the used character
+			lower[i]--;
+		}
+
+		// Else replace it with the smallest
+		// uppercase character available
+		else if (isupper(s[k])) {
+			while (upper[j] == 0)
+				j++;
+			s[k] = (char)(j + 'A');
+
+			// Decrement the frequency
+			// of the used character
+			upper[j]--;
+		}
+	}
+
+	// Return the sorted string
+	return s;
+}
+
+// Driver code
+int main()
+{
+	string s = "gEeksfOrgEEkS";
+	int n = s.length();
+
+	cout << getSortedString(s, n);
+
+	return 0;
+}
+
+
+//2ND METHOD,O(M*N)
+#include <bits/stdc++.h>
+using namespace std;
+
+void merge(int arr1[], int arr2[], int n, int m)
+{
+	// two pointer to iterate
+	int i = 0;
+	int j = 0;
+	while (i < n && j < m) {
+		if (arr1[i] <= arr2[j]) {
+			i++;
+		}
+		else if (arr1[i] > arr2[j]) {
+			// if arr1[i]>arr2[j] then first we swap both
+			// element so that arr1[i] become smaller means
+			// arr1[] become sorted then we check that
+			// arr2[j] is smaller then all other element in
+			// right side of arr2[j] if arr2[] is not sorted
+			// then we linearly do sorting
+			// means while adjecent element are less than
+			// new arr2[j] we do sorting like by chnaging
+			// position of element by shifting one position
+			// toward left
+			swap(arr1[i], arr2[j]);
+			i++;
+			if (j < m - 1 && arr2[j + 1] < arr2[j]) {
+				int temp = arr2[j];
+				int tempj = j + 1;
+				while (arr2[tempj] < temp && tempj < m) {
+					arr2[tempj - 1] = arr2[tempj];
+					tempj++;
+				}
+				arr2[tempj - 1] = temp;
+			}
+		}
+	}
+}
+
+//IN O(N^N) AND O(N).
+// C++ program to find minimum number
+// of swaps required to sort an array
+#include <bits/stdc++.h>
+using namespace std;
+
+void swap(vector<int> &arr, int i, int j)
+{
+	int temp = arr[i];
+	arr[i] = arr[j];
+	arr[j] = temp;
+}
+
+int indexOf(vector<int> &arr, int ele)
+{
+	for(int i = 0; i < arr.size(); i++)
+	{
+		if (arr[i] == ele)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+// Return the minimum number
+// of swaps required to sort the array
+int minSwaps(vector<int> arr, int N)
+{
+	int ans = 0;
+	vector<int> temp(arr.begin(),arr.end());
+	sort(temp.begin(),temp.end());
+	
+	for(int i = 0; i < N; i++)
+	{
+		
+		// This is checking whether
+		// the current element is
+		// at the right place or not
+		if (arr[i] != temp[i])
+		{
+			ans++;
+
+			// Swap the current element
+			// with the right index
+			// so that arr[0] to arr[i] is sorted
+			swap(arr, i, indexOf(arr, temp[i]));
+		}
+	}
+	return ans;
+}
+
+
+IN O(NLOGN) AND O(N)
+// C++ program to find
+// minimum number of swaps
+// required to sort an array
+#include<bits/stdc++.h>
+using namespace std;
+
+void swap(vector<int> &arr,
+		int i, int j)
+{
+int temp = arr[i];
+arr[i] = arr[j];
+arr[j] = temp;
+}
+// Return the minimum number
+// of swaps required to sort
+// the array
+int minSwaps(vector<int>arr,
+			int N)
+{
+int ans = 0;
+vector<int>temp = arr;
+
+// Hashmap which stores the
+// indexes of the input array
+map <int, int> h;
+
+sort(temp.begin(), temp.end());
+for (int i = 0; i < N; i++)
+{
+	h[arr[i]] = i;
+}
+for (int i = 0; i < N; i++)
+{
+	// This is checking whether
+	// the current element is
+	// at the right place or not
+	if (arr[i] != temp[i])
+	{
+	ans++;
+	int init = arr[i];
+
+	// If not, swap this element
+	// with the index of the
+	// element which should come here
+	swap(arr, i, h[temp[i]]);
+
+	// Update the indexes in
+	// the hashmap accordingly
+	h[init] = h[temp[i]];
+	h[temp[i]] = i;
+	}
+}
+return ans;
+}
+Given a number n. The task is to find the smallest number whose factorial contains at least n trailing zeroes
+1) How to find number of trailing zeroes of a factorial without actually finding the factorial
+2) How to increment left and right pointers to binary search in a infinitely large search spaceO(log2 N * log5 N)
+int count(int n){
+    if(n < 5) return 0;
+    return n/5 + count(n/5);
+}
+int findNum(int n){
+    int l = 0;
+    int r = 50000;
+    int ans = 50000;
+    while(l <= r){
+        int mid = l + (r-l)/2;
+        if(count(mid) >= n){
+            ans = mid;
+            r = mid-1;
+        }
+        else{
+            l = mid+1;
+        }
+    }
+    return ans;
+}
+
+
+
+

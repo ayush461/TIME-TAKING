@@ -1,0 +1,246 @@
+#include <iostream>
+#include<stack>
+using namespace std;
+class node{
+    public:
+    int data;
+    node *next;
+    node(int d){
+        data=d;
+        next=NULL;//ll mei next and tree mei right,left
+    }
+};
+  node* top=NULL;//yeh global var hai func ek andar local leke isko assign kro
+ //jaha pr top bdlna hai waha direct use kro like in insn,reversal etc.
+  //for insertion LIFO
+void insert(int value){
+   
+node* root=new node(value);
+if(root==NULL){
+    cout<<"ni ho skta";
+    return;
+}
+root->next=top;
+top=root;
+}
+//free the memory also
+
+void pop(){
+    node *temp=top;
+   top=top->next;
+    cout<<temp->data;
+    delete temp;
+}
+void print(){
+    
+    node *temp=top;
+    if(temp==NULL){
+        cout<<"ni hai kuch";
+        return;
+    }
+    while(temp!=NULL){
+        cout<<temp->data<<" ";
+        temp=temp->next;
+    }
+}
+void peek(){
+    if(top!=NULL)
+    cout<<(top->data);
+}
+// Reverses the stack using simple o(n) time
+    // linked list reversal logic.
+    void reverse()
+    { //node *temp=top;
+        node *prev, *cur, *succ;
+        cur = prev = top;
+        cur = cur->next;
+        prev->next = NULL;
+        while (cur != NULL) {
+ 
+            succ = cur->next;
+            cur->next = prev;
+            prev = cur;
+            cur = succ;
+        }
+        top = prev;
+    }
+//for parenthesis balance check
+bool isb(char *s){
+//using stl in stack
+stack <char> a;
+for(int i=0;s[i]!='\0';i++){
+    char ch=s[i];
+
+    if(ch=='('){
+        a.push(ch);
+    }
+   else if(ch==')'){
+        if(a.empty() or a.top()!='('){
+            return false;
+        }
+        a.pop();
+    }
+}
+return a.empty();
+}
+//stock span problem,prev curr se chota toh pop prev
+ 
+ vector<int> stockspan(vector<int> prices){
+    stack<pair<int,int>>s;
+    vector<int>ans;
+    for(auto it:prices){
+        int days=1;
+        while(!s.empty() and (s.top()).first<=it){
+            days +=s.top().second;
+            s.pop();
+        }
+        s.push(make_pair(it,days));
+        ans.push_back(days);//for storing every price days
+    }
+    return ans;
+}
+        
+// C++ program for a Queue based approach
+// to find first non-repeating character
+#include <bits/stdc++.h>
+using namespace std;
+const int MAX_CHAR = 26;
+
+// function to find first non repeating
+// character of sa stream
+void firstnonrepeating(char str[])
+{
+	queue<char> q;
+	int charCount[MAX_CHAR] = { 0 };
+
+	// traverse whole stream
+	for (int i = 0; str[i]; i++) {
+
+		// push each character in queue
+		q.push(str[i]);
+
+		// increment the frequency count
+		charCount[str[i] - 'a']++;
+
+		// check for the non pepeating character
+		while (!q.empty()) {
+			if (charCount[q.front() - 'a'] > 1)
+				q.pop();
+			else {
+				cout << q.front() << " ";
+				break;
+			}
+		}
+
+		if (q.empty())
+			cout << -1 << " ";
+	}
+	cout << endl;
+}
+
+
+
+int main() {
+    char s[100]="((a+b)+((c-d+e))";
+    if(isb(s)){
+        cout<<"balance hai";
+    }else{
+        cout<<"no balance\n";
+    }
+    vector<int>prices{100,80,60,70,60,75,85};
+    vector<int>temp=stockspan(prices);
+    for(auto ir:temp){
+        cout<<ir<<" ";
+    }   
+    }
+    /*
+   insert(3);
+    insert(4);
+     insert(2);
+      insert(5);
+   print();cout<<endl;*/
+//pop();cout<<endl;
+  // peek();
+   //reverse();cout<<endl;
+  //print();
+    return 0;
+}
+
+int evaluatePostfix(string str)
+    {
+        // Your code here
+        stack<int> s;
+    
+    for(int i = 0; i < str.size(); i++)
+    {
+        if(str[i] >= '0' && str[i] <= '9')
+        {
+            s.push(str[i]-'0');
+        }
+        else
+        {
+            int n1 = s.top();
+            s.pop();
+            
+            int n2 = s.top();
+            s.pop();
+            
+            if(str[i] == '*')
+            {
+                s.push(n1*n2);
+            }
+            else if(str[i] == '/')
+            {
+                s.push(n2/n1);
+            }
+            else if(str[i] == '+')
+            {
+                s.push(n1+n2);
+            }
+            else if(str[i] == '-')
+            {
+                s.push(n2-n1);
+            }
+        }
+    }
+    
+    return s.top();
+
+    }
+void insertAtBottom(stack<int> &s, int item)
+{
+    // base case: if the stack is empty, insert the given item at the bottom
+    if (s.empty())
+    {
+        s.push(item);
+        return;
+    }
+ 
+    // Pop all items from the stack and hold them in the call stack
+    int top = s.top();
+    s.pop();
+    insertAtBottom(s, item);
+ 
+    // After the recursion unfolds, push each item in the call stack
+    // at the top of the stack
+    s.push(top);
+}
+ 
+// Recursive function to reverse a given stack
+void reverseStack(stack<int> &s)
+{
+    // base case: stack is empty
+    if (s.empty()) {
+        return;
+    }
+ 
+    // Pop all items from the stack and hold them in the call stack
+    int item = s.top();
+    s.pop();
+    reverseStack(s);
+ 
+    // After the recursion unfolds, insert each item in the call stack
+    // at the bottom of the stack
+    insertAtBottom(s, item);
+}
+ 
