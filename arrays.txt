@@ -65,6 +65,31 @@ int maximum69Number (int num) {
     	return 0;
     } 
 
+//find k closest elements to x in a given  sorted array
+ vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+        vector<int>ans;
+        int n=arr.size();
+        //range dekh ke lena hai
+        int l=0;
+        int r=n-k;
+    //we are finding the stating point closest to x
+        while(l<r){
+            int mid= l+(r-l)/2;
+            //yaha pr gap check kro jitna bada gap utna dur hoga x se
+            if(x-arr[mid]>arr[mid+k]-x)
+                l=mid+1;
+            else
+                r=mid;
+        }
+        //here l and r will same 
+        
+        //ab yaha se k elements daal do
+       for(int i=r;i<r+k;i++){
+           ans.push_back(arr[i]);
+       }
+        return ans;
+    }
+
 //Allocate Minimum Number of Pages,SAME AS PAINTER-PARTITION PROBLEM
 int isPossible(vector<int> &A, int pages, int students) {
     int cnt = 0;
