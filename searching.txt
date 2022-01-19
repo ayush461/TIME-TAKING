@@ -1,4 +1,10 @@
 
+           //syntax of erase function in string 
+           string s="asfwffw";
+	 //q is a stack of pairs
+         //s.erase(position,no of characters to be deleted)
+        s.erase(q.top().second,1);
+
 Q1) TERNARY SEARCH,divides array in 3 parts,for sorted array
 
     int ternarySearch(int arr[], int N, int K) 
