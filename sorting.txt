@@ -2,6 +2,9 @@
                         A stable algorithm produces first output. ... 
                              QuickSort is an unstable algorithm because we do swapping of elements according to pivot's position 
                                                                                (without considering their original positions)
+//syntax of insert function in vector
+vector<int>arr;
+arr.insert(position,value);
 
 //it returns an iterator ie:dont store in a string
 //convert complete string to lowercase 
