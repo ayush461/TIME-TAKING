@@ -1,4 +1,4 @@
-//BST mei inorder ka socha kro thoda
+  //BST mei inorder ka socha kro thoda
 //global variables are passed by refrence automatically.
 #include <iostream>
 #include<cmath>
