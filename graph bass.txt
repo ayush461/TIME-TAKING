@@ -659,6 +659,85 @@ int main(){
         ----------------------------------
 
 
+class Solution {
+public:
+    int dx[4]={0,0,1,-1};
+    int dy[4]={1,-1,0,0};
+    int si=0;
+    int k=2;
+    bool che(vector<vector<int>>& grid,int i,int j,int m,int n){
+        if(i>=m or j>=n or i<0 or j<0)return false;
+        return true;
+    }
+    
+    void dfs(vector<vector<int>>& grid,int i,int j,int n,int m){
+        if(i>=n or j>=m or i<0 or j<0)return;
+        if(grid[i][j]==0 or grid[i][j]==k)return;
+        si++;
+        //make visisted
+        grid[i][j]=k;
+        //call recursively for all 4 directions,can also use direction array
+        dfs(grid,i+1,j,n,m);
+         dfs(grid,i-1,j,n,m);
+         dfs(grid,i,j+1,n,m);
+         dfs(grid,i,j-1,n,m);
+        
+            
+    }
+    //can change only one 0 to one and count the total size.
+    int largestIsland(vector<vector<int>>& grid) {
+        
+        int n=grid.size();
+        int m=grid[0].size();
+        int area=INT_MIN;
+        unordered_map<int,int>mp;
+        
+        //do dfs and count size of each island and store in map
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]==1){
+                    dfs(grid,i,j,n,m);
+                    mp[k]=si;
+                    k++;
+                    si=0;
+                }
+            }
+        }
+  queue<pair<int,int>> q;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]==0)
+                    q.push({i,j});
+            }
+        }
+        while(!q.empty()){
+            auto p=q.front();
+            q.pop();
+            int x=p.first;
+            int y=p.second;
+			// Unordered Set to make sure the islands are unique
+            unordered_set<int> s;
+            int tmp=0;
+            for(int i=0;i<4;i++){
+                int xx=dx[i]+x;
+                int yy=dy[i]+y;
+                if(xx<0||yy<0||xx>=m||yy>=n)    continue;
+                if(grid[xx][yy]==0)     continue;
+                int val=grid[xx][yy];
+                if(s.find(val)==s.end()){
+                    s.insert(val);
+                    tmp+=mp[val];
+                }
+            }
+            area=max(area,tmp+1);
+        }
+        if(area==INT_MIN)area=m*n;
+        return area;
+    
+
+    }
+};
+
 
 #include <bits/stdc++.h>
 using namespace std;
