@@ -1,5 +1,16 @@
 
-      //Therefore, building the entire Heap will take N heapify operations and the total time complexity will be O(N*logN).
+
+		//syntax of string function
+		string(no of times to be printed or added,'charcater to be added');
+      	for eg->	cout<<string(7,'k');
+        while(!maxheap.empty()){
+            s+=string(maxheap.top().first,maxheap.top().second); //frequency times the character
+            maxheap.pop();
+        }
+        
+
+
+  //Therefore, building the entire Heap will take N heapify operations and the total time complexity will be O(N*logN).
 
    In reality, building a heap takes O(n) time depending on the implementation which can be seen
 #include <iostream>
