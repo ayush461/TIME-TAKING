@@ -657,6 +657,59 @@ int main(){
     return 0;
 }
         ----------------------------------
+//Rotten tomatoes
+class Solution {
+public:
+    
+    int dx[4]={0,0,1,-1};
+    int dy[4]={1,-1,0,0};
+    void dfs(vector<vector<int>>& grid,int i,int j,int time){
+        
+        grid[i][j]=time;
+                
+         for(int k=0;k<=3;k++){
+             int x=i+dx[k];
+             int y=j+dy[k];
+              if(x<0 or y<0 or x>=grid.size() or y>=grid[0].size() )continue;
+                
+               if(grid[x][y]>time or grid[x][y]==1)
+                dfs(grid,x,y,time+1);       
+         }
+
+
+           
+    }
+    int orangesRotting(vector<vector<int>>& grid) {
+        
+        int n=grid.size();
+        int m=grid[0].size();
+        int time=2;
+        int ans=INT_MIN;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]==2){
+                    dfs(grid,i,j,time);
+                    
+                }
+            }
+        }
+        
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]==1){
+                    return -1;}
+                   ans=max(ans,grid[i][j]); 
+                            }
+        }
+        
+        if(ans!=0)
+        return ans-2;
+        else
+        return 0;
+    }
+    
+};
+
 
 
 class Solution {
