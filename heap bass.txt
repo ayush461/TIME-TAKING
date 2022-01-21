@@ -1,6 +1,6 @@
 
 
-		//syntax of string function
+//syntax of string function
 		string(no of times to be printed or added,'charcater to be added');
       	for eg->	cout<<string(7,'k');
         while(!maxheap.empty()){
