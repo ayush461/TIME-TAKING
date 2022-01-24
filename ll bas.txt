@@ -1,4 +1,6 @@
 
+
+//take care of segmentation fault in pointers
  //LL has most no of edge cases think,all of it!	
 
 //Quick Sort requires a lot of this kind of access. In linked list to access i’th index, 
