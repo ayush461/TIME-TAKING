@@ -244,3 +244,26 @@ void reverseStack(stack<int> &s)
     insertAtBottom(s, item);
 }
  
+//Next samller element in array,isme INDEX KA IMP ROLE HAI FOR CORRECT POSITIONING OF ELEMENTS IN ANS ARRAY
+TC:O(N),S:O(N)
+class Solution{
+    
+    public:
+    vector<int> next_small(vector<int> arr, int n) 
+    { 
+       vector<int>ans(n,-1);
+       stack<int>s;
+       for(int i=0;i<n;i++){
+           while(!s.empty() and arr[s.top()]>arr[i]){
+               ans[s.top()]=arr[i];
+               s.pop();
+           }
+           
+           
+           s.push(i);
+       }
+    //   while(!s.empty())
+    //   ans.push_back(-1);
+       
+       return ans;
+    } 
