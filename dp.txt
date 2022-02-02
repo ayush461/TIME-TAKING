@@ -1,6 +1,55 @@
 //dp,rec,backtracking mei fark jyda ni hai backt krte jb har possible soln dekhna padta,aur isme bhi dp apply kr skte agr overlaping subprob hua toh
 
 
+Patterns
+
+Minimum (Maximum) Path to Reach a Target
+Distinct Ways
+Merging Intervals
+DP on Strings
+Decision Making
+
+    Minimum (Maximum) Path to Reach a Target
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // C++ program using memoization
