@@ -7,7 +7,7 @@ Extra comments added for better understanding.
 #For Contribution:
 Fork and clone the repositry.
 Create a new branch.
-Add the correct algorithm in correct file.
+Add the correct algorithm in correct-file.
 Generate the pull request.
 
 </pre>
