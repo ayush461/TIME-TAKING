@@ -1,4 +1,19 @@
 
+
+//same thing for sort and reverse
+
+//index diya hai toh row ke hisab se and woh bhi sirf first row
+//isme sara row ko reverse krne ke liye use for loop
+for(int i=0;i<matrix.size();i++)
+  reverse(matrix[i].begin(),matrix[i].end());
+
+
+
+//agr kuch index ni hai toh first col ke hisab se kaam ho rha
+//isse sara col reverse hogya
+  reverse(matrix.begin(),matrix.end());
+
+
 // Appends 10 occurrences of '$'
     // to str
     str.append(10, '$');
