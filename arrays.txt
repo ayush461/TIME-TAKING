@@ -469,83 +469,29 @@ void printFirstNegativeInteger(int arr[], int k, int n)
 }
 
 
-// CPP program for the above approach
-#include <bits/stdc++.h>
-using namespace std;
 
 // A Dequeue (Double ended queue) based
 // method for printing maximum element of
 // all subarrays of size k
-void printKMax(int arr[], int n, int k)
-{
-	
-	// Create a Double Ended Queue,
-	// Qi that will store indexes
-	// of array elements
-	// The queue will store indexes
-	// of useful elements in every
-	// window and it will
-	// maintain decreasing order of
-	// values from front to rear in Qi, i.e.,
-	// arr[Qi.front[]] to arr[Qi.rear()]
-	// are sorted in decreasing order
-	std::deque<int> Qi(k);
 
-	/* Process first k (or first window)
-	elements of array */
-	int i;
-	for (i = 0; i < k; ++i)
-	{
-	
-		// For every element, the previous
-		// smaller elements are useless so
-		// remove them from Qi
-		while ((!Qi.empty()) && arr[i] >=
-							arr[Qi.back()])
-			
-			// Remove from rear
-			Qi.pop_back();
+// CPP program for the above approach
+#include <bits/stdc++.h>
+using namespace std;
 
-		// Add new element at rear of queue
-		Qi.push_back(i);
-	}
-
-	// Process rest of the elements,
-	// i.e., from arr[k] to arr[n-1]
-	for (; i < n; ++i)
-	{
-	
-		// The element at the front of
-		// the queue is the largest element of
-		// previous window, so print it
-		cout << arr[Qi.front()] << " ";
-
-		// Remove the elements which
-		// are out of this window
-		while ((!Qi.empty()) && Qi.front() <=
-										i - k)
-			
-			// Remove from front of queue
-			Qi.pop_front();
-
-		// Remove all elements
-		// smaller than the currently
-		// being added element (remove
-		// useless elements)
-		while ((!Qi.empty()) && arr[i] >=
-							arr[Qi.back()])
-			Qi.pop_back();
-
-		// Add current element at the rear of Qi
-		Qi.push_back(i);
-	}
-
-	// Print the maximum element
-	// of last window
-	cout << arr[Qi.front()];
-}
-
-
+ vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        deque<int> dq;
+        vector<int> ans;
+        for (int i=0; i<nums.size(); i++) {
+            if (!dq.empty() && dq.front() == i-k) dq.pop_front();
+            
+            while (!dq.empty() && nums[dq.back()] < nums[i])
+                dq.pop_back();
+            
+            dq.push_back(i);
+            if (i>=k-1) ans.push_back(nums[dq.front()]);
+        }
+        return ans;
+    }
 
 
 Suppose we have a number A and we want to  
@@ -930,4 +876,25 @@ Given a binary array arr of size N and an integer M. Find the maximum number of 
         }
         reverse(nums.begin()+i+1 , nums.end());
         
+    }
+
+//in one pass,warna next and prev smaller se bhi ho jata but in 2 pass.
+ int largestRectangleArea(vector<int>& heights) {
+        stack<int> st; 
+        int maxA = 0; 
+        int n = heights.size(); 
+        for(int i = 0;i<=n;i++) {
+            while(!st.empty() && (i==n || heights[st.top()] >= heights[i])) {
+                int height = heights[st.top()];
+                st.pop(); 
+                int width; 
+                if(st.empty()) width = i; 
+                else width = i - st.top() - 1; 
+                
+                // cout << i << " " << width << " " << height << endl; 
+                maxA = max(maxA, width * height); 
+            }
+            st.push(i); 
+        }
+        return maxA;
     }
