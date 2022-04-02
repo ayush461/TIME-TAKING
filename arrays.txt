@@ -4,7 +4,7 @@
 
 //index diya hai toh row ke hisab se and woh bhi sirf first row
 //isme sara row ko reverse krne ke liye use for loop
-for(int i=0;i<matrix.size();i++)
+for(int i=0;i<matrix.si'ze();i++)
   reverse(matrix[i].begin(),matrix[i].end());
 
 
@@ -341,7 +341,7 @@ int findK(int A[MAX][MAX], int n, int m, int k)
 				m - 2, k - (2 * n + 2 * m - 4));
 }
 
-// C++ program for Kth mallest element in the matrix. in O(N*Log(N))
+// C++ program for Kth smallest element in the matrix. in O(N*Log(N))
 // form of matrix
 
 int kthSmallest(int mat[MAX][MAX], int n, int k)
