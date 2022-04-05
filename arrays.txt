@@ -434,37 +434,39 @@ int kthElement(int arr1[], int arr2[], int n, int m, int k)
 #include <iostream>
 using namespace std;
 
-void printFirstNegativeInteger(int arr[], int k, int n)
-{
-	int firstNegativeIndex = 0;
-	int firstNegativeElement;
-	
-	
-	for(int i = k - 1; i < n; i++)
-	{
-	
-		// skip out of window and positive elements
-		while((firstNegativeIndex < i ) &&
-			(firstNegativeIndex <= i - k ||
-			arr[firstNegativeIndex] > 0))
-		{
-			firstNegativeIndex ++;
-		}
-		
-		// check if a negative element is found, otherwise use 0
-		if(arr[firstNegativeIndex] < 0)
-		{
-			firstNegativeElement = arr[firstNegativeIndex];
-		}
-		else
-		{
-			firstNegativeElement = 0;
-		}
-		cout<<firstNegativeElement << " ";
-	}
-	
-}
-
+vector<long long> printFirstNegativeInteger(long long int A[],
+                                             long long int n, long long int k) {
+       
+  
+      vector<long long>v;
+      queue<long long>q;
+      int i=0,j=0;
+      while(j<n){
+          
+          if(A[j]<0)q.push(A[j]);
+          //if window size is small
+       if(j-i+1<k){
+           j++;
+       }   
+          //same size as k
+   else   if(j-i+1==k){
+              
+              if(!q.empty())
+              v.push_back(q.front());
+              else
+              v.push_back(0);
+              
+              //q ka front and prev ele same ni hona chaiye
+              if(A[i]==q.front())q.pop();
+              
+              i++;j++;
+              
+          }
+       
+      }
+       
+       return v;
+       }
 
 
 // A Dequeue (Double ended queue) based
