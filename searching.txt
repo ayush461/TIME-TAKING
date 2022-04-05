@@ -244,31 +244,7 @@ vector<vector<int> > fourSum(vector<int> &num, int target) {
     
     }
 
-Kth Smallest Element in a Sorted Matrix  {HEAP SE TC BADH JATA}
-class Solution { // 20 ms, faster than 98.92%
-public:
-    int m, n;
-    int kthSmallest(vector<vector<int>>& matrix, int k) {
-        m = matrix.size(), n = matrix[0].size(); // For general, the matrix need not be a square
-        int left = matrix[0][0], right = matrix[m-1][n-1], ans = -1;
-        while (left <= right) {
-            int mid = (left + right) >> 1;
-            if (countLessOrEqual(matrix, mid) >= k) {
-                ans = mid;
-                right = mid - 1; // try to looking for a smaller value in the left side
-            } else left = mid + 1; // try to looking for a bigger value in the right side
-        }
-        return ans;
-    }
-    int countLessOrEqual(vector<vector<int>>& matrix, int x) {
-        int cnt = 0, c = n - 1; // start with the rightmost column
-        for (int r = 0; r < m; ++r) {
-            while (c >= 0 && matrix[r][c] > x) --c;  // decrease column until matrix[r][c] <= x
-            cnt += (c + 1);
-        }
-        return cnt;
-    }
-};
+
 
 
 
@@ -626,28 +602,6 @@ void printSubsequences(int arr[], int n)
 	}
 }
 
-//FIINDING PIVOT POINT
-int findPivot(int arr[], int low, int high)
-{
-    // base cases
-    if (high < low)
-        return -1;
-    if (high == low)
-        return low;
- 
-    int mid = (low + high) / 2; /*low + (high - low)/2;*/
-    if (mid < high && arr[mid] > arr[mid + 1])
-        return mid;
- 
-    if (mid > low && arr[mid] < arr[mid - 1])
-        return (mid - 1);
- 
-    if (arr[low] >= arr[mid])
-        return findPivot(arr, low, mid - 1);//bada elemnt dena hai toh bada ke trf jao
- 
-    return findPivot(arr, mid + 1, high);
-}
-
 //find the duplicate in oN time and o1 space,(no must be from 1 to n+1)
 
 if (nums.size() > 1)
@@ -670,5 +624,30 @@ if (nums.size() > 1)
 	}
 	return -1;
 }
+
+class Solution {
+public:
+    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+        
+        //i just need the st index.
+        
+        vector<int>ans;
+        int l=0;
+        int h=arr.size()-k;
+        
+        while(l<h){
+            
+           int mid=l+(h-l)/2;
+            
+            if(x-arr[mid]>arr[mid+k]-x)
+                l=mid+1;
+            else
+                h=mid;
+        }
+       for(int i=l;i<l+k;i++){
+           ans.push_back(arr[i]);
+       }
+        return ans;
+    }
 
 
