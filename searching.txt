@@ -96,8 +96,51 @@ int main()
 
 	return 0;
 }
-// This code is contributed by Harsh kedia
 
+
+Kth Smallest Product of Two Sorted Arrays Log(n)log(m)
+class Solution {
+    public long kthSmallestProduct(int[] nums1, int[] nums2, long k) {
+        long lb = (long) -1e10, rb = (long) 1e10;
+        
+        while(lb <= rb){
+            long dotProduct = (lb + rb) / 2;
+            if(countNoOfElements(nums1,nums2,dotProduct) < k)
+                lb = dotProduct + 1;
+            else 
+                rb = dotProduct - 1;
+        }
+        
+        return rb;
+    }
+    
+    private long countNoOfElements(int[] nums1, int[] nums2, long dotProduct){
+        long count = 0;
+        for(int ele : nums1){
+            if(ele >= 0){
+                int li = 0, ri = nums2.length;
+                while(li < ri){
+                    int mid = (li + ri) / 2;
+                    if((long) ele * nums2[mid] < dotProduct) li = mid + 1;
+                    else ri = mid;
+                }
+                
+                count += li;
+            }else{
+                int li = 0, ri = nums2.length;
+                while(li < ri){
+                    int mid = (li + ri) / 2;
+                    if((long) ele * nums2[mid] >= dotProduct) li = mid + 1;
+                    else ri = mid ;
+                }
+                
+                count += nums2.length - li;
+            }
+        }
+        
+        return count;
+    }
+}
 
 
 
@@ -149,40 +192,96 @@ cout<<0<<endl;
     return 0;
 }
 
+//for rmsb of a no is rmsb=no & -no(this is ~no then ~no+1)
 
-
-
-
-
-
-
-
-// find pair whose diff==n IN O(N) time  sorting+2pointer se O(NLOGN) LGEGA
-bool findPair(int arr[], int size, int n)
+// Function that find the unique element,and others repeating k times
+// in the array arr[]
+int findUniqueElements(int arr[], int N,
+					int K)
 {
-    // Initialize positions of two elements
-    int i = 0;
-    int j = 1;
- 
-    // Search for a pair
-    while (i < size && j < size)//simple bs ni hua kyuki subtn mei dono a and b ko change kr skte.
-    {
-        if (i != j && arr[j] - arr[i] == n) //int idx=upper_bound(a+i+1,a+n,a[i]+n)-a;if(a[idx]-a[i] ==n)cout<<true else false;
-        {
-            cout << "Pair Found: (" << arr[i] <<
-                        ", " << arr[j] << ")";
-            return true;
-        }
-        else if (arr[j]-arr[i] < n)
-            j++;
-        else
-            i++;
-    }
- 
-    cout << "No such pair";
-    return false;
+	// Store all unique element in set
+	unordered_set<int> s(arr, arr + N);
+
+	// Sum of all element of the array
+	int arr_sum = accumulate(arr, arr + N, 0);
+
+	// Sum of element in the set
+	int set_sum = accumulate(s.begin(),
+							s.end(),
+							0);
+
+	// Print the unique element using formula
+	cout << (K * set_sum - arr_sum) / (K - 1);
+}
+//using bit method..
+// CPP program for the above approach
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to find single occurrence element
+int findunique(vector<int>& a, int k)
+{
+	int res = 0;
+
+	for (int i = 0; i < 32; i++) {
+		int p = 0;
+
+		for (int j = 0; j < a.size(); j++) {
+			// By shifting 1 to left ith
+			// time and taking and with 1
+			// will give us that ith
+			// bit of a[j] is 1 or 0
+			p += (abs(a[j]) & (
+				1 << i)) != 0 ? 1 : 0;
+		}
+
+		// Taking modulo of p with k
+		p %= k;
+
+		// Generate result
+		res += pow(2, i) * p;
+	}
+
+	int c = 0;
+
+	// Loop for negative numbers
+	for (auto x : a)
+
+		if (x == res) {
+			c = 1;
+			break;
+		}
+
+	// Check if the calculated value res
+	// is present in array, then mark c=1
+	// and if c = 1 return res
+	// else res must be -ve
+	return c == 1 ? res : -res;
 }
 
+
+
+
+
+// find pair whose diff==n IN O(N) time  sorting+2pointer(dono pointer aage se suru hoga why???) se O(NLOGN) LGEGA
+int findPairs(vector<int>& nums, int k) {
+        
+        sort(nums.begin(), nums.end());
+        int ans = 0, i = 0, j = 1;
+        for(i, j; i<nums.size() && j<nums.size(); ) {
+            if(i==j || nums[j]-nums[i]<k) j++;
+            else {
+                if(nums[j]-nums[i]==k) {
+                    ans++;
+                    j++;
+                    while(j<nums.size() && nums[j]==nums[j-1]) j++; // remove redundant
+                }
+                i++;
+                while(i<j && nums[i]==nums[i-1]) i++; // remove redundant
+            }
+        }
+        return ans;
+    }
 
 4 SUM IN ARRAY,O(N^3)
 vector<vector<int> > fourSum(vector<int> &num, int target) {
