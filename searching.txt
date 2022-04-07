@@ -476,27 +476,30 @@ The sub-problems can be stored thus reducing the complexity and converting the
 // with no adjacent elements considered
 // `i` ——> index of the current element
 // `prev` ——> index of the previous element included in the sum
-int findMaxSumSubsequence(vector<int> const &nums, int i, int n, int prev)
-{
-    // base case: all elements are processed
-    if (i == n) {
-        return 0;
-    }
- 
-    // recur by excluding the current element
-    int excl = findMaxSumSubsequence(nums, i + 1, n, prev);
- 
-    int incl = 0;
- 
-    // include current element only if it's not adjacent to
-    // the previous element
-    if (prev + 1 != i) {
-        incl = findMaxSumSubsequence(nums, i + 1, n, i) + nums[i];
-    }
- 
-    // return maximum sum we get by including or excluding
-    // current item
-    return max(incl, excl);
+
+   	int dp[1000007];
+	int cal(int *arr,int n,int i){
+	     
+	    if(i>=n)
+	       return 0; 
+	     
+	     if(i==n-1)
+	     return arr[n-1];
+        	  
+        	  if(dp[i]!=0)
+        	  return dp[i];
+        	  
+	   int a=arr[i]+cal(arr,n,i+2);
+	   int b=cal(arr,n,i+1);
+	   
+	    return dp[i]=max(a,b);
+	}
+	int findMaxSum(int *arr, int n) {
+	    // code here
+	    memset(dp,0,sizeof(dp));
+	     return cal(arr,n,0);
+	    
+	}
 }
  
 int main()
