@@ -343,3 +343,63 @@ return ans;}
 
 
 
+// C++ program to calculate number
+// of subarrays with distinct elements of size k
+#include <bits/stdc++.h>
+#include <map>
+#include <vector>
+using namespace std;
+
+int subarraysWithKDistinct(vector<int>& A, int K)
+{
+
+	// declare a map for the frequency
+	unordered_map<int, int> mapp;
+	int begin = 0, end = 0, prefix = 0, cnt = 0;
+	int res = 0;
+
+	// traverse the array
+	while (end < A.size())
+	{
+		// increase the frequency
+		mapp[A[end]]++;
+		if (mapp[A[end]] == 1) {
+			cnt++;
+		}
+		end++;
+		if (cnt > K)
+		{
+			mapp[A[begin]]--;
+			begin++;
+			cnt--;
+			prefix = 0;
+		}
+	
+		// loop until mapp[A[begin]] > 1
+		while (mapp[A[begin]] > 1)
+		{
+			mapp[A[begin]]--;
+			begin++;
+			prefix++;
+		}
+		if (cnt == K)
+		{
+			res += prefix + 1;
+		}
+	}
+
+	// return the final count
+	return res;
+}
+// Driver code
+int main()
+{
+	vector<int> arr{ 2, 1, 2, 1, 6 };
+	int k = 2;
+
+	// Function call
+	cout << (subarraysWithKDistinct(arr, k));
+}
+
+
+

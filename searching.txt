@@ -259,8 +259,23 @@ int findunique(vector<int>& a, int k)
 	return c == 1 ? res : -res;
 }
 
-
-
+Given an integer array nums, return the number of triplets chosen from the array that can make triangles if we take them as side lengths of a triangle
+//isme first and middle assign dekh ke krna hai
+int triangleNumber(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int n = nums.size(), ans = 0;
+        for (int k = 2; k < n; ++k) {
+            int i = 0, j = k - 1;
+            while (i < j) {
+                if (nums[i] + nums[j] > nums[k]) {
+                    ans += j - i;
+                    j -= 1;
+                } else {
+                    i += 1;
+                }
+            }
+        }
+        return ans;
 
 
 // find pair whose diff==n IN O(N) time  sorting+2pointer(dono pointer aage se suru hoga why???) se O(NLOGN) LGEGA
