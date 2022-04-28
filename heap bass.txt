@@ -244,7 +244,63 @@ void printArray(int arr[], int size)
 	cout << endl;
 }
 
+//Find median in stream
+class MedianFinder {
+    private:
+    priority_queue<int>bh;
+    priority_queue<int,vector<int>,greater<int>>sh;
+public:
+    MedianFinder() {
+        
+    }
+    
+    void addNum(int num) {
+        //push and balance when size is even
+        if(bh.empty() and sh.empty()){
+            bh.push(num);
+            return;
+        }
+        
+        if(bh.top()<num){
+            sh.push(num);
+        }
+        else
+        {
+            bh.push(num);
+        }
+        int bs=bh.size();
+        int ss=sh.size();
+       if((bs-ss)==2 or (bs-ss)==-2){
+           
+        if(bs>ss){
+          int ele=bh.top();
+            bh.pop();
+           sh.push(ele) ;
+            
+        }
+           else{
+             int ele=sh.top();
+            sh.pop();
+           bh.push(ele) ;
+        }
 
+       }
+        
+    }
+    
+    double findMedian() {
+        int bs=bh.size();
+        int ss=sh.size();
+        if((bs+ss)%2==0){
+            // double a=bh.top();
+            // double b=sh.top();
+            return (double)((double)bh.top()+(double)sh.top())/2.0;
+        }
+         if(bs>ss)
+          return  bh.top();
+        return sh.top();
+    }
+};
 
 
 Huffman codding

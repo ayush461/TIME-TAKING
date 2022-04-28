@@ -503,25 +503,6 @@ int replaceNodeWithSumOfChildren(node *root){
     return root->data +temp;
 }
 
-//ALL NODES AT DIST K FROM TARGET 
-void printkdistanceNodeDown(node *root, int k)
-{
-    // Base Case
-    if (root == NULL || k < 0)  return;
- 
-    // If we reach a k distant node, print it
-    if (k==0)
-    {
-        cout << root->data << endl;
-        return;
-    }
- 
-    // Recur for left and right subtrees
-    printkdistanceNodeDown(root->left, k-1);
-    printkdistanceNodeDown(root->right, k-1);
-
-}
-
      maxSumNonAdjacentNodes
  class Solution{
   public:
@@ -551,6 +532,26 @@ void printkdistanceNodeDown(node *root, int k)
         return max(ans.first, ans.second);
     }
 };
+
+//ALL NODES AT DIST K FROM TARGET 
+void printkdistanceNodeDown(node *root, int k)
+{
+    // Base Case
+    if (root == NULL || k < 0)  return;
+ 
+    // If we reach a k distant node, print it
+    if (k==0)
+    {
+        cout << root->data << endl;
+        return;
+    }
+ 
+    // Recur for left and right subtrees
+    printkdistanceNodeDown(root->left, k-1);
+    printkdistanceNodeDown(root->right, k-1);
+
+}
+
 
 // Prints all nodes at distance k from a given target node.
 // The k distant nodes may be upward or downward.  This function
@@ -1294,88 +1295,75 @@ int main()
 }
 
 // BURINING OF TREE
-struct Node *root = NULL;
-
-queue<Node*> que;
-
-int burningTree(struct Node *root, int targetNode) {
-    
-    if(root == NULL) 
-        return 0;
-
-    if(root->data == targetNode) {
-        cout << targetNode << endl;
-        if(root->left != NULL)
-            que.push(root->left);
-        if(root->right != NULL)
-            que.push(root->right);
-        return 1;
-    } 
-
-    int left = burningTree(root->left, targetNode);
-    if(left == 1) {
-        int queueSize = que.size();
-        for(int i = 0; i < queueSize; i++) {
-            struct Node *current = que.front();
-            que.pop();
-            cout << current->data << " ";
-            if(current-> left != NULL)
-                que.push(current->left);
-            if(current->right != NULL)
-                que.push(current->right);
-        }
-        if(root->right != NULL)
-            que.push(root->right);
-        cout << root->data << endl;
-        return 1;
-    }
-     
-    int right = burningTree(root->right, targetNode);
-    if(right == 1) {
-        int queueSize = que.size();
-        for(int i = 0; i < queueSize; i++) {
-            struct Node *current = que.front();
-            que.pop();
-            cout << current->data << " ";
-            if(current-> left != NULL)
-                que.push(current->left);
-            if(current->right != NULL)
-                que.push(current->right);
-        }
-        if(root->left != NULL)
-            que.push(root->left);
-        cout << root->data << endl;
-        return 1;
-    }   
-    return 0;
-}
-    
-int main(int argc, char const *argv[]) {
-    root = new Node(3);
-    root->left = new Node(5);
-    root->right = new Node(1);
-    root->left->left = new Node(6);
-    root->left->right = new Node(2);
-    root->right->left = new Node(0);
-    root->right->right = new Node(8);
-    root->left->right->left = new Node(7);
-    root->left->right->right = new Node(4);
-    
-    burningTree(root, 5);
-    int c=0; 
-    //basically it is a bfs of tree
-    while(!que.empty()) {
-        int queueSize = que.size();
-        for(int i = 0; i < queueSize; i++) {
-            struct Node *current = que.front();
-            que.pop();
-            cout << current->data << " ";
-            if(current-> left != NULL)
-                que.push(current->left);
-            if(current->right != NULL)
-                que.push(current->right);
-        }
-        cout << endl;
+class Solution {
+  public:
+  Node *source;
+         unordered_map<Node*,Node*>getParent;
+        
+         void solve(Node *root,int target){
+             
+             if(!root) return;
+             if(root->data==target) source=root;
+             
+             if(root->left) getParent[root->left]=root;
+             if(root->right) getParent[root->right]=root;
+             solve(root->left,target);
+             solve(root->right,target);
+         }
+    int minTime(Node* root, int target) 
+    {
+        // Your code goes here
+        getParent[root]==root;
+           solve(root,target);
+            
+            if(root and !root->left and !root->right) return 0;
+            
+           queue<Node*>q;
+           set<Node*>vis;
+           q.push(source);
+           int time=0;
+           while(!q.empty()){
+               
+               int size=q.size();
+               time++;
+               while(size--){
+                   
+                   Node *curr=q.front();
+                              q.pop();
+                              
+                    if(vis.count(curr)==1) break;  
+                    vis.insert(curr);
+                    
+                    if(curr->left){
+                       
+                       if((curr->left->left or curr->left->right) and !vis.count(curr->left)){
+                           
+                           q.push(curr->left);
+                       }
+                   }
+                   if(curr->right){
+                        if((curr->right->left or curr->right->right) and !vis.count(curr->right)){
+                           
+                           q.push(curr->right);
+                       }
+                       
+                   }
+                   
+                   if(getParent[curr]){
+                       
+                       if(vis.count(getParent[curr])==0){
+                           q.push(getParent[curr]);
+                       }
+                   }
+                   
+               }
+               
+               
+           }
+         
+           return time;
+           
+           
     }
 
 int main() {
