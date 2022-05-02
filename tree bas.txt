@@ -42,6 +42,37 @@ int count(node* root){
     {return 0;}
     return 1+count(root->left)+count(root->right);
 }
+//INORDER MORRIS (O(1)->tbhi toh isko padh rhe)
+//WE WILL CREATE THREADED LINKS FOR PROPER OUPTUT
+vector<int> cal(Node *root){
+if(root==NULL)return;
+vectir<int>inord;
+Node *curr=root;
+
+while(curr!=NULL){
+
+//1st case
+if(!curr->left){
+ inord.push_back(curr->val);
+curr=curr->right;
+}
+
+else{
+
+
+
+
+
+
+
+
+
+
+
+
+
+return inord;
+}
 
 //INORDER ITERATIVE O(N);
 void inOrder(struct Node *root)
@@ -1220,8 +1251,7 @@ Info largestBSTBT(Node* root)
 		return curr;
 	}
 
-	// If whole tree is not BST, return maximum
-	// of left and right subtrees
+	curr.sz = max(l.ans, r.ans);
 	curr.ans = max(l.ans, r.ans);
 	curr.isBST = false;
 
