@@ -63,15 +63,18 @@ else{
  while(pre->right and pre->right!=curr)
    pre=pre->right;
 
+  if(pre==NULL){
+    pre->right=curr;
 
+  }
+else{
+pre->right=NULL;
+inord.push_back(pre->val);
+curr=curr->right;
+}
 
-
-
-
-
-
-
-
+}
+}
 return inord;
 }
 
