@@ -58,9 +58,10 @@ curr=curr->right;
 }
 
 else{
-
-
-
+ //go to extreme right and check it is null or pointing to root(threaded part)
+ Node *pre=curr->left;
+ while(pre->right and pre->right!=curr)
+   pre=pre->right;
 
 
 
