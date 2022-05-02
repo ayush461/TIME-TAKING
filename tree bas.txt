@@ -63,13 +63,14 @@ else{
  while(pre->right and pre->right!=curr)
    pre=pre->right;
 
-  if(pre==NULL){
+  if(pre->right==NULL){
     pre->right=curr;
-
+ //preod.push_back(pre->val);//for preod not inod baki sab same.
+    curr=curr->left;
   }
 else{
 pre->right=NULL;
-inord.push_back(pre->val);
+inord.push_back(pre->val);//yaha se preod ke liye ht jayega
 curr=curr->right;
 }
 
