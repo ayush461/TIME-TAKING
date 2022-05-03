@@ -571,7 +571,55 @@ vector<int> postorder(Node* root) {
 
 
 
+// Recursive function which delete
+// the leaf from tree
+ 
+TreeNode* deleteleafnodes(TreeNode* root){
+    if(root==NULL)return NULL;     //if root is NULL return NULL
+    if(root->children.size()==0){  //if root itself is leaf then return NULL
+        delete root;
+        return NULL;
+    }
+    for(int i=0;i<root->children.size();i++){//moving onto its children
+        TreeNode* child=root->children[i];
+        if(child->children.size()==0){       // if leaf then delete that node
+            delete child;
+            for(int j=i;j<root->children.size()-1;j++){// update the children vector as well
+                root->children[j]=root->children[j+1];
+            }
+            root->children.pop_back();
+            i--;
+        }
+    }
+    for(int i=0;i<root->children.size();i++){  //recursive call
+        root->children[i]=deleteleafnodes(root->children[i]);
+    }
+    return root;
+}
+ 
 
+int diameter( Node *ptr,int &d)
+{
+    // Base case
+    if (!ptr)
+        return 0;
+ 
+    // Find top two highest children
+    int max1 = 0, max2 = 0;
+    for (auto it:ptr->children)
+    {
+        int h = diameter(it,d);
+        if (h > max1)
+        max2 = max1, max1 = h;
+        else if (h > max2)
+        max2 = h;
+    }
+ 
+    // Find whether our node can be part of diameter
+    d = max(max1 + max2 + 1,d);
+ 
+    return max(max1,max2) + 1;
+}
 
 
 
