@@ -622,6 +622,121 @@ int diameter( Node *ptr,int &d)
 }
 
 
+void serialization(TreeNode<int> *root, vector<int> &file)
+{
+
+    // If tree is empty.
+    if (root == NULL)
+    {
+        file.push_back(-1);
+        return;
+    }
+
+    // Push data into root.
+    file.push_back(root -> data);
+
+    // Initialise a queue.
+    queue<TreeNode<int> *> q;
+
+    // Push root into queue.
+    q.push(root);
+
+    // Traverse through the queue.
+    while (q.empty() == false)
+    {
+
+        // Store front of queue.
+        TreeNode<int> *currentNode = q.front();
+
+        // Pop element.
+        q.pop();
+
+        // Traverse.
+        for (int j = 0; j < (currentNode -> child).size(); j++)
+        {
+            TreeNode<int> *node = currentNode -> child[j];
+            file.push_back(node -> data);
+            q.push(node);
+        }
+
+        // Push -1.
+        file.push_back(-1);
+    }
+}
+
+TreeNode<int> *deserialization(TreeNode<int> *root, vector<int> &file)
+{
+
+    // Initialise data.
+    int Data;
+    Data = file[0];
+
+    // If data is -1 return root.
+    if (Data == -1)
+    {
+        return root;
+    }
+
+    root = new TreeNode<int>(Data);
+
+    // Initialise queue.
+    queue<TreeNode<int> *> q;
+    q.push(root);
+
+    // Initialise variable.
+    int i = 1;
+
+    // Traverse through the queue.
+    while (q.empty() == false)
+    {
+
+        // Store front of queue.
+        TreeNode<int> *currentNode = q.front();
+        q.pop();
+
+        // Initialise variable.
+        int x;
+        vector<TreeNode<int> *> children;
+
+        // While true.
+        while (1)
+        {
+
+            // Update x.
+            x = file[i];
+            i = i + 1;
+            if (x == -1)
+            {
+                break;
+            }
+            else
+            {
+                TreeNode<int> *node = new TreeNode<int>(x);
+                children.push_back(node);
+                q.push(node);
+                
+            }
+        }
+
+        // Update child of current.
+        currentNode -> child = children;
+    }
+
+    // Return root.
+    return root;
+}
+
+TreeNode<int> *SerDeser(TreeNode<int> *root)
+{
+
+    // Serialisation.
+    vector<int> file;
+    serialization(root, file);
+
+    // Deserialisation.
+    TreeNode<int> *resNode = deserialization(NULL, file);
+    return resNode;
+}
 
 
 
