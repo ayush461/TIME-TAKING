@@ -1,18 +1,22 @@
 //dp,rec,backtracking mei fark jyda ni hai backt krte jb har possible soln dekhna padta,aur isme bhi dp apply kr skte agr overlaping subprob hua toh
 
 
-Patterns
+//LIS BS approach when inputs is large ,therefore dp approach of n*n will give TLE
+int lengthOfLIS(vector<int>& nums) {
+        vector<int> temp;
+        temp.push_back(nums[0]);
+        for(int i(0);i<nums.size();i++){
+            if(nums[i] > temp.back()){
+                temp.push_back(nums[i]);
+            }else{
+                int ind = lower_bound(temp.begin(),temp.end(),nums[i]) - temp.begin();
+                temp[ind] = nums[i];
+            }
+        }
+        return temp.size();
+    }
 
-Minimum (Maximum) Path to Reach a Target
-Distinct Ways
-Merging Intervals
-DP on Strings
-Decision Making
-
-    Minimum (Maximum) Path to Reach a Target
-
-
-
+//LIS using DP approach using 2d arr 
 
 
 
