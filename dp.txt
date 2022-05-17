@@ -39,10 +39,68 @@ public:
 
 
 
+Frog Jump with K Distance  TC:O(N*K)
+
+
+int cal(vector<int>&nums,int k,int n,int i,vector<int>&dp){
+	
+	if(i==n-1)
+		return 0;
+	if(i>=n)
+		return 1e5;
+	int ans=INT_MAX;
+	if(dp[i]!=-1)return dp[i];
+	//for k jumps
+	for(int j=1;j<=k;j++){
+		if(j+i<=n)
+		int op1=abs(nums[i]-nums[i+j])+cal(nums,k,n,i+j);
+		ans=min(ans,op1);
+	}
+	
+	return dp[i]=ans;
+	
+	
+}
+int uniquePaths(int m, int n) {
+	int n=nums.size();
+	vector<int>dp(n+1,-1);
+	return cal(nums,k,n,0,dp);
+}
 
 
 
+House Robber II ,circular houses.
 
+class Solution {
+public:
+     int cal(vector<int>&nums,int n,int i,vector<int>&dp){
+        
+        if(i==n-1)
+           return nums[i];
+        
+        if(i>=n)
+        return 0;
+        if(dp[i]!=-1)return dp[i];
+        int op1=0,op2=0;
+        //not pick
+       op1=cal(nums,n,i+1,dp);
+       op2+=nums[i]+cal(nums,n,i+2,dp);
+        
+        return dp[i]=max(op1,op2);
+    }
+    int rob(vector<int>& nums) {
+        
+        int n=nums.size();
+        if(n==1)return nums[0];
+     
+        vector<int>dp(n+1,-1);
+      int ans=cal(nums,n,1,dp);
+     vector<int>dp1(n+1,-1);
+        int ans1=cal(nums,n-1,0,dp1);
+        
+            return max(ans,ans1);
+    }
+};
 
 
 
