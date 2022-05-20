@@ -1,5 +1,5 @@
 //dp,rec,backtracking mei fark jyda ni hai backt krte jb har possible soln dekhna padta,aur isme bhi dp apply kr skte agr overlaping subprob hua toh
-
+//space optimization ke liye tabulation krna hi hoga and can think of further reducing the SC.
 
 //LIS BS approach when inputs is large ,therefore dp approach of n*n will give TLE
 int lengthOfLIS(vector<int>& nums) {
