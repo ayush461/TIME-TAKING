@@ -102,13 +102,49 @@ public:
     }
 };
 
+//MINIMUM SUM PATH IN GRID USING O(M)SPACE
+int minSumPath(vector<vector<int>> &mat) {
+    // Write your code here.
+	int n=mat.size();
+	int m=mat[0].size();
+	vector<int>dp(m+1,0);
+	dp[0]=mat[0][0];
+	for(int i=0;i<n;i++){
+		vector<int>curr(m+1,0);
+		for(int j=0;j<m;j++){
+			if(i==0 and j==0){curr[j]=mat[i][j];continue;}
+			int op1=1e9,op2=1e9;
+			if(i>0)op1=mat[i][j]+dp[j];
+			if(j>0)op2=mat[i][j]+curr[j-1];
+			curr[j]=min(op1,op2);
+		}
+		dp=curr;
+	}
+	
+	
+	return dp[m-1];
+}
+	
 
+//Subset Sum Equal To K
+bool subsetSumToK(int n, int k, vector<int> &arr) {
+    //isko apne se tabu mei krkr agge badho
+    vector<bool>dp(k+1,0),curr(k+1,0);
+    dp[0]=curr[0]=true;
+  //bcz col k tho hai so now out of bound ni hogaa.
+    if(arr[0]<=k)dp[arr[0]]=true;
+     for(int i=1;i<n;i++){
 
-
-
-
-
-
+        for(int j=1;j<=k;j++){
+        bool op1=dp[j];
+    bool op2=false;
+    if(arr[i]<=j)
+    op2=dp[j-arr[i]];
+    curr[j]=op1 | op2;
+        }
+         dp=curr;
+    }
+   return dp[k];
 
 
 
