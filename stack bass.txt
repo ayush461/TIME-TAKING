@@ -207,6 +207,20 @@ int evaluatePostfix(string str)
     return s.top();
 
     }
+//check with given (, ), *
+bool checkValidString(string s) {
+        int cmin = 0, cmax = 0;
+        for (char c : s) {
+            if (c == '(')
+                cmax++, cmin++;
+            if (c == ')')
+                cmax--, cmin = max(cmin - 1, 0);
+            if (c == '*')
+                cmax++, cmin = max(cmin - 1, 0);
+            if (cmax < 0) return false;
+        }
+        return cmin == 0;
+
 void insertAtBottom(stack<int> &s, int item)
 {
     // base case: if the stack is empty, insert the given item at the bottom

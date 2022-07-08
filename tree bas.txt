@@ -289,51 +289,66 @@ Construct Binary Tree from String with bracket representation
 // Below function accepts sttring and a pointer variable as
 // an argument
 // and draw the tree. Returns the root of the tree
-Node* constructtree(string s, int* start)
+int findIndex(string str, int si, int ei)
 {
-	// Assuming there is/are no negative
-	// character/characters in the string
-	if (s.size() == 0 || *start >= s.size())
-		return NULL;
-
-	// constructing a number from the continuous digits
-	int num = 0;
-	while (*start < s.size() && s[*start] != '('
-		&& s[*start] != ')') {
-		int num_here = (int)(s[*start] - '0');
-		num = num * 10 + num_here;
-		*start = *start + 1;
-	}
-
-	// creating a node from the constructed number from
-	// above loop
-	struct Node* root = new Node(num);
-
-	// check if start has reached the end of the string
-	if (*start >= s.size())
-		return root;
-
-	// As soon as we see first right parenthesis from the
-	// current node we start to construct the tree in the
-	// left
-	if (*start < s.size() && s[*start] == '(') {
-		*start = *start + 1;
-		root->left = constructtree(s, start);
-	}
-	if (*start < s.size() && s[*start] == ')')
-		*start = *start + 1;
-
-	// As soon as we see second right parenthesis from the
-	// current node we start to construct the tree in the
-	// right
-	if (*start < s.size() && s[*start] == '(') {
-		*start = *start + 1;
-		root->right = constructtree(s, start);
-	}
-	if (*start < s.size() && s[*start] == ')')
-		*start = *start + 1;
-	return root;
+    if (si > ei)
+        return -1;
+ 
+    // Inbuilt stack
+    stack<char> s;
+ 
+    for (int i = si; i <= ei; i++) {
+ 
+        // if open parenthesis, push it
+        if (str[i] == '(')
+            s.push(str[i]);
+ 
+        // if close parenthesis
+        else if (str[i] == ')') {
+            if (s.top() == '(') {
+                s.pop();
+ 
+                // if stack is empty, this is
+                // the required index
+                if (s.empty())
+                    return i;
+            }
+        }
+    }
+    // if not found return -1
+    return -1;
 }
+ 
+// function to construct tree from string
+Node* treeFromString(string str, int si, int ei)
+{
+    // Base case
+    if (si > ei)
+        return NULL;
+ 
+    // new root
+    Node* root = newNode(str[si] - '0');
+    int index = -1;
+ 
+    // if next char is '(' find the index of
+    // its complement ')'
+    if (si + 1 <= ei && str[si + 1] == '(')
+        index = findIndex(str, si + 1, ei);
+ 
+    // if index found
+    if (index != -1) {
+ 
+        // call for left subtree
+        root->left = treeFromString(str, si + 2, index - 1);
+ 
+        // call for right subtree
+        root->right
+            = treeFromString(str, index + 2, ei - 1);
+    }
+    return root;
+}
+
+
 
 //geeting lvl no of a node
 int getLevelUtil(node* node,
@@ -512,60 +527,27 @@ head=head->next;
       }
 //check tree is comptlete or not,recursion se mei count no of nodes then anothr func mei index=0; do and inde>=no return false;
 
-bool isCompleteBT(node* root)
-{
-    // Base Case: An empty tree
-    // is complete Binary Tree
-    if (root == NULL)
-        return true;
-    queue<node *> q;
-    q.push(root);
-    // Create a flag variable which will be set true
-    // when a non full node is seen
-    bool flag = false;
- 
-    // Do level order traversal using queue.
-    //enQueue(queue, &rear, root);
-    while(!q.empty())
-    {
-        node *temp =q.front();
-        q.pop();
- 
-        /* Check if left child is present*/
-        if(temp->left)
-        {
-        // If we have seen a non full node,
-        // and we see a node with non-empty
-        // left child, then the given tree is not
-        // a complete Biary Tree
-        if (flag == true)
-            return false;
- 
-        q.push(temp->left);// Enqueue Left Child
-        }
-        else // If this a non-full node, set the flag as true
-        flag = true;
- 
-        /* Check if right child is present*/
-        if(temp->right)
-        {
-        // If we have seen a non full node,
-        // and we see a node with non-empty
-        // right child, then the given tree is not
-        // a complete Binary Tree
-        if(flag == true)
-            return false;
- 
-        q.push(temp->right); // Enqueue Right Child
-        }
-        else // If this a non-full node, set the flag as true
-        flag = true;
-    }
- 
-    // If we reach here, then the
-    // tree is complete Binary Tree
-    return true;
-}
+bool isCompleteBT(Node* root){
+        if(root==NULL)return true;
+        bool f=false;
+        queue<Node *>q;
+        q.push(root);
+        while(!q.empty()){
+        Node *temp = q.front();
+           q.pop();
+           if(temp == NULL) {
+               f = true;
+           }
+           else {
+               if(f == true) {
+                   return false;
+               }
+               q.push(temp->left);
+               q.push(temp->right);
+           }
+       }
+       return true;
+
  
 
       //replace parent with child sum,postorder is applied
@@ -615,140 +597,110 @@ int replaceNodeWithSumOfChildren(node *root){
 };
 
 //ALL NODES AT DIST K FROM TARGET 
-void printkdistanceNodeDown(node *root, int k)
-{
-    // Base Case
-    if (root == NULL || k < 0)  return;
- 
-    // If we reach a k distant node, print it
-    if (k==0)
-    {
-        cout << root->data << endl;
-        return;
-    }
- 
-    // Recur for left and right subtrees
-    printkdistanceNodeDown(root->left, k-1);
-    printkdistanceNodeDown(root->right, k-1);
 
-}
+class Solution {
+    void markParents(TreeNode* root, unordered_map<TreeNode*, TreeNode*> &parent_track, TreeNode* target) {
+        queue<TreeNode*> queue;
+        queue.push(root);
+        while(!queue.empty()) { 
+            TreeNode* current = queue.front(); 
+            queue.pop();
+            if(current->left) {
+                parent_track[current->left] = current;
+                queue.push(current->left);
+            }
+            if(current->right) {
+                parent_track[current->right] = current;
+                queue.push(current->right);
+            }
+        }
+    }
+public:
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        unordered_map<TreeNode*, TreeNode*> parent_track; // node -> parent
+        markParents(root, parent_track, target); 
+        
+        unordered_map<TreeNode*, bool> visited; 
+        queue<TreeNode*> queue;
+        queue.push(target);
+        visited[target] = true;
+        int curr_level = 0;
+        while(!queue.empty()) { /*Second BFS to go upto K level from target node and using our hashtable info*/
+            int size = queue.size();
+            if(curr_level++ == k) break;
+            for(int i=0; i<size; i++) {
+                TreeNode* current = queue.front(); queue.pop();
+                if(current->left && !visited[current->left]) {
+                    queue.push(current->left);
+                    visited[current->left] = true;
+                }
+                if(current->right && !visited[current->right]) {
+                    queue.push(current->right);
+                    visited[current->right] = true;
+                }
+                if(parent_track[current] && !visited[parent_track[current]]) {
+                    queue.push(parent_track[current]);
+                    visited[parent_track[current]] = true;
+                }
+            }
+        }
+        vector<int> result;
+        while(!queue.empty()) {
+            TreeNode* current = queue.front(); queue.pop();
+            result.push_back(current->val);
+        }
+        return result;
+    }
 
-
-// Prints all nodes at distance k from a given target node.
-// The k distant nodes may be upward or downward.  This function
-// Returns distance of root from target node, it returns -1 if target
-// node is not present in tree rooted with root.
-int printkdistanceNode(node* root, node* target , int k)
-{
-    // Base Case 1: If tree is empty, return -1
-    if (root == NULL) return -1;
- 
-    // If target is same as root.  Use the downward function
-    // to print all nodes at distance k in subtree rooted with
-    // target or root
-    if (root == target)
-    {
-        printkdistanceNodeDown(root, k);
-        return 0;
-    }
- 
-    // Recur for left subtree
-    int dl = printkdistanceNode(root->left, target, k);
- 
-    // Check if target node was found in left subtree
-    if (dl != -1)
-    {
-         // If root is at distance k from target, print root
-         // Note that dl is Distance of root's left child from target
-         if (dl + 1 == k)
-            cout << root->data << endl;
- 
-         // Else go to right subtree and print all k-dl-2 distant nodes
-         // Note that the right child is 2 edges away from left child
-         else
-            printkdistanceNodeDown(root->right, k-dl-2);
- 
-         // Add 1 to the distance and return value for parent calls
-         return 1 + dl;
-    }
- 
-    // MIRROR OF ABOVE CODE FOR RIGHT SUBTREE
-    // Note that we reach here only when node was not found in left subtree
-    int dr = printkdistanceNode(root->right, target, k);
-    if (dr != -1)
-    {
-         if (dr + 1 == k)
-            cout << root->data << endl;
-         else
-            printkdistanceNodeDown(root->left, k-dr-2);
-         return 1 + dr;
-    }
- 
-    // If target was neither present in left nor in right subtree
-    return -1;
-}
 
 // function to print cousins of the node,IN REC WE WILL FIND LVL FIRST THEN PRINT THE NODE IN THAT LVL
 
-void printCousins(Node* root, Node* node_to_find)
+int getLevel(Node *root, Node *node, int level)
 {
-	// if the given node is the root itself,
-	// then no nodes would be printed
-	if (root == node_to_find) {
-		cout << "Cousin Nodes : None" << endl;
-		return;
-	}
-
-	queue<Node*> q;
-	bool found = false;
-	int size_;
-	Node* p;
-	q.push(root);
-
-	while (!q.empty() && !found) {
-
-		size_ = q.size();
-		while (size_) {
-			p = q.front();
-			q.pop();
-
-		
-			if ((p->left == node_to_find ||
-				p->right == node_to_find)) {
-				found = true;
-			}
-			else {
-				if (p->left)
-					q.push(p->left);
-				if (p->right)
-					q.push(p->right);
-			}
-
-			size_--;
-		}
-	}
-
-	// if found == true then the queue will contain the
-	// cousins of the given node
-	if (found) {
-		cout << "Cousin Nodes : ";
-		size_ = q.size();
-
-		// size_ will be 0 when the node was at the
-		// level just below the root node.
-		if (size_ == 0)
-			cout << "None";
-		for (int i = 0; i < size_; i++) {
-			p = q.front();
-			q.pop();
-			cout << p->data << " ";
-		}
-	}
-	else {
-		cout << "Node not found";
-	}
-	cout << endl;
-	return;
+     
+    // base cases
+    if (root == NULL)
+        return 0;
+    if (root == node)
+        return level;
+ 
+    // If node is present in left subtree
+    int downlevel = getLevel(root->left,
+                             node, level + 1);
+    if (downlevel != 0)
+        return downlevel;
+ 
+    // If node is not present in left subtree
+    return getLevel(root->right, node, level + 1);
+}
+ 
+/* Print nodes at a given level such that
+sibling of node is not printed if it exists */
+void printGivenLevel(Node* root, Node *node, int level)
+{
+    // Base cases
+    if (root == NULL || level < 2)
+        return;
+ 
+    // If current node is parent of a node
+    // with given level
+    if (level == 2)
+    {
+        if (root->left == node || root->right == node)
+            return;
+        if (root->left)
+            cout << root->left->data << " ";
+        if (root->right)
+            cout << root->right->data;
+    }
+ 
+    // Recur for left and right subtrees
+    else if (level > 2)
+    {
+        printGivenLevel(root->left, node, level - 1);
+        printGivenLevel(root->right, node, level - 1);
+    }
+}
 }
 
 //O(N), because at a node will be traversed 2 times. hence O(2N) == O(N).
@@ -848,7 +800,8 @@ return false;
 
 //MAXM PATH SUM
 
-int findMaxUtil(Node* root, int &res)
+int ans=INT_MIN;
+int cal(Node* root, int &res)
 {
     //Base Case
     if (root == NULL)
@@ -856,22 +809,12 @@ int findMaxUtil(Node* root, int &res)
  
     // l and r store maximum path sum going through left and
     // right child of root respectively
-    int l = findMaxUtil(root->left,res);
-    int r = findMaxUtil(root->right,res);
- 
-    // Max path for parent call of root. This path must
-    // include at-most one child of root
-    int max_single = max(max(l, r) + root->data, root->data);
- 
-    // Max Top represents the sum when the Node under
-    // consideration is the root of the maxsum path and no
-    // ancestors of root are there in max sum path
-    int max_top = max(max_single, l + r + root->data);
- 
-    res = max(res, max_top); // Store the Maximum Result.
- 
-    return max_single;
-}
+    int l = max(cal(root->left),0);
+    int r = max(cal(root->right),0);
+     int tmp=root->val+l+r;
+    	ans=max(ans,tmp);
+      return root->val+max(l,r);
+    }
 
 
 
@@ -1171,7 +1114,7 @@ void helper(Node* root,vector<int> arr,vector<vector<int>> &ans)
 	and ans vector simultaneously*/
 	helper(root->left,arr,ans);
 	helper(root->right,arr,ans);
-//yaha pop krte
+		//yaha pop krte
 }
 vector<vector<int>> Paths(Node* root)
 {
@@ -1230,73 +1173,45 @@ void displayCList(Node *head)
 #include <bits/stdc++.h>
 using namespace std;
 
-/* A binary tree node has data,
-pointer to left child and a
-pointer to right child */
-struct Node
-{
-	int data;
-	struct Node* left;
-	struct Node* right;
+class NodeValue {
+public:
+    int maxNode, minNode, maxSize;
+    
+    NodeValue(int minNode, int maxNode, int maxSize) {
+        this->maxNode = maxNode;
+        this->minNode = minNode;
+        this->maxSize = maxSize;
+    }
 };
 
-
-
-// Information to be returned by every
-// node in bottom up traversal.
-struct Info
-{
-	int sz; // Size of subtree
-	int max; // Min value in subtree
-	int min; // Max value in subtree
-	int ans; // Size of largest BST which
-	// is subtree of current node
-	bool isBST; // If subtree is BST
+class Solution {
+private:
+    NodeValue largestBSTSubtreeHelper(TreeNode* root) {
+        // An empty tree is a BST of size 0.
+        if (root==NULL) {
+            return NodeValue(INT_MAX, INT_MIN, 0);
+        }
+        
+        // Get values from left and right subtree of current tree.
+        auto left = largestBSTSubtreeHelper(root->left);
+        auto right = largestBSTSubtreeHelper(root->right);
+        
+        // Current node is greater than max in left AND smaller than min in right, it is a BST.
+        if (left.maxNode < root->val && root->val < right.minNode) {
+            // It is a BST.
+            return NodeValue(min(root->val, left.minNode), max(root->val, right.maxNode), 
+                            left.maxSize + right.maxSize + 1);
+        }
+        
+        // Otherwise, return [-inf, inf] so that parent can't be valid BST
+        return NodeValue(INT_MIN, INT_MAX, max(left.maxSize, right.maxSize));
+    }
+    public:
+    int largestBSTSubtree(TreeNode* root) {
+        return largestBSTSubtreeHelper(root).maxSize;
+    }
 };
 
-// Returns Information about subtree. The
-// Information also includes size of largest
-// subtree which is a BST.
-Info largestBSTBT(Node* root)
-{
-	// Base cases : When tree is empty or it has
-	// one child.
-	if (root == NULL)
-		return {0, INT_MIN, INT_MAX, 0, true};
-	if (root->left == NULL && root->right == NULL)
-		return {1, root->data, root->data, 1, true};
-
-	// Recur for left subtree and right subtrees
-	Info l = largestBSTBT(root->left);
-	Info r = largestBSTBT(root->right);
-
-	// Create a return variable and initialize its
-	// size.
-	Info curr;
-	curr.sz = (1 + l.sz + r.sz);
-
-	// If whole tree rooted under current root is
-	// BST.
-	if (l.isBST && r.isBST && l.max < root->data &&
-			r.min > root->data)
-	{
-		curr.min = min(l.min, min(r.min, root->data));
-		curr.max = max(r.max, max(l.max, root->data));
-
-		// Update answer for tree rooted under
-		// current 'root'
-		curr.ans = ret.sz;
-		curr.isBST = true;
-
-		return curr;
-	}
-
-	curr.sz = max(l.ans, r.ans);
-	curr.ans = max(l.ans, r.ans);
-	curr.isBST = false;
-
-        return curr;
-}
 
 // C++ program to find maximum sum in Binary Tree
 // such that no two nodes are adjacent.
