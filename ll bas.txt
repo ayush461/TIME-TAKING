@@ -829,36 +829,25 @@ node* mergeList(node* ll1, node* ll2) { //function for merging two sorted list
    }
    return newhead;
 }
-void splitList(node* start, node** ll1,node** ll2) {
-   //similar to flyod's tortoise algorithm
-   node* slow = start;
-   node* fast = start -> next;
-   while(fast!= NULL) {
-      fast = fast -> next;
-      if(fast!= NULL) {
-         slow = slow -> next;
-         fast = fast -> next;
-      }
-   }
-   *ll1 = start;
-   *ll2 = slow -> next;
-   //spliting
-   slow -> next = NULL;
-}
-void mergeSort(node** start) {
-   node* head = *start;
-   node* ll1,*ll2;
-   //base case
-   if(head == NULL || head->next == NULL) {
-      return;
-   }
-   splitList(head,&ll1,&ll2); //split the list in two halves
-   //sort left and right sublists
-   mergeSort(&ll1);
-   mergeSort(&ll2);
-   //merge two sorted list
-   *start = mergeList(ll1,ll2);
-   return;
+
+void mergeSort(node* head) {
+    
+        if(head==NULL or head->next==NULL)
+            return head;
+        
+        ListNode* s=head,*f=head,*t=NULL;
+        
+        while(f!=NULL and f->next!=NULL){
+            t=s;
+            s=s->next;
+            f=f->next->next;
+        }
+       
+        t->next=NULL;
+        ListNode* l=sortList(head);
+         ListNode *r=sortList(s);
+        
+        return merge(l,r);
 }
 int main() {
    cout << "Creating the linked list: " << endl;

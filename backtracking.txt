@@ -63,6 +63,24 @@ bool solveNQUtil(int board[N][N], int col)
 		}
 	}
 
+//optimized version we can use instead of using issafe pos for all index.{hashing method}
+for (int row = 0; row < n; row++) {
+        if (leftrow[row] == 0 && lowerDiagonal[row + col] == 0 && upperDiagonal[n - 1 + col - row] == 0) {
+          board[row][col] = 'Q';
+          leftrow[row] = 1;
+          lowerDiagonal[row + col] = 1;
+          upperDiagonal[n - 1 + col - row] = 1;
+          solve(col + 1, board, ans, leftrow, upperDiagonal, lowerDiagonal, n);
+          board[row][col] = '.';
+          leftrow[row] = 0;
+          lowerDiagonal[row + col] = 0;
+          upperDiagonal[n - 1 + col - row] = 0;
+        }
+      }
+
+
+
+
 	/* If the queen cannot be placed in any row in
 		this colum col then return false */
 	return false;
